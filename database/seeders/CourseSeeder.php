@@ -1,0 +1,363 @@
+<?php
+
+namespace Database\Seeders;
+
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+
+class CourseSeeder extends Seeder
+{
+    /**
+     * Run the database seeds.
+     */
+    public function run(): void
+    {
+        // Courses for Data Engineering (SECPH)
+        DB::table('course')->insertOrIgnore([
+            // 1st Semester
+            [
+                'courseCode' => 'SECP2613',
+                'courseName' => 'System Analysis and Design',
+                'courseDesc' => 'Introduction to programming concepts and techniques.',
+                'courseSem' => 1,
+                'courseCreds' => 3,
+                'courseLocBuilding' => 'N28',
+                'courseLocRoom' => 'BK1',
+                'coursePreReq' => null,
+                'courseDate' => 'Monday',
+                'courseTime' => '10:00-12:00',
+                'progCode' => 'SECPH',
+            ],
+            [
+                'courseCode' => 'SECP1513',
+                'courseName' => 'Technology and Information Systems',
+                'courseDesc' => 'Introduction to technology and information systems.',
+                'courseSem' => 1,
+                'courseCreds' => 3,
+                'courseLocBuilding' => 'N28',
+                'courseLocRoom' => 'BK2',
+                'coursePreReq' => null,
+                'courseDate' => 'Tuesday',
+                'courseTime' => '08:00-10:00',
+                'progCode' => 'SECPH',
+            ],
+
+            // 2nd Semester
+            [
+                'courseCode' => 'SECP3723',
+                'courseName' => 'System Development Technology',
+                'courseDesc' => 'Introduction to system development technology.',
+                'courseSem' => 2,
+                'courseCreds' => 4,
+                'courseLocBuilding' => 'N28A',
+                'courseLocRoom' => 'BT4',
+                'coursePreReq' => 'SECP2613',
+                'courseDate' => 'Thursday',
+                'courseTime' => '09:00-13:00',
+                'progCode' => 'SECPH',
+            ],
+            [
+                'courseCode' => 'SECP2753',
+                'courseName' => 'Data Mining',
+                'courseDesc' => 'Introduction to data mining concepts and techniques.',
+                'courseSem' => 2,
+                'courseCreds' => 3,
+                'courseLocBuilding' => 'N28',
+                'courseLocRoom' => 'MPK3',
+                'coursePreReq' => null,
+                'courseDate' => 'Wednesday',
+                'courseTime' => '14:00-16:00',
+                'progCode' => 'SECPH',
+            ],
+
+            // 3rd Semester
+            [
+                'courseCode' => 'SECP3106',
+                'courseName' => 'Application Development',
+                'courseDesc' => 'Comprehensive study of application development lifecycle and methodologies.',
+                'courseSem' => 3,
+                'courseCreds' => 3,
+                'courseLocBuilding' => 'N28A',
+                'courseLocRoom' => 'MPK7',
+                'coursePreReq' => 'SECP3723',
+                'courseDate' => 'Thursday',
+                'courseTime' => '08:00-12:00',
+                'progCode' => 'SECPH',
+            ],
+            [
+                'courseCode' => 'SECP3744',
+                'courseName' => 'Enterprise Systems Design and Modelling',
+                'courseDesc' => 'Advanced concepts in designing and modelling enterprise systems.',
+                'courseSem' => 3,
+                'courseCreds' => 4,
+                'courseLocBuilding' => 'N28',
+                'courseLocRoom' => 'MPK4',
+                'coursePreReq' => null,
+                'courseDate' => 'Tuesday',
+                'courseTime' => '08:00-12:00',
+                'progCode' => 'SECPH',
+            ],
+        ]);
+
+        // Courses Bioinformatics (SECBH)
+        DB::table('course')->insertOrIgnore([
+            // 1st Semester
+            [
+                'courseCode' => 'SEBB4203',
+                'courseName' => 'Protein Biomolecules',
+                'courseDesc' => 'Study of protein biomolecules and their functions.',
+                'courseSem' => 1,
+                'courseCreds' => 3,
+                'courseLocBuilding' => 'N28A',
+                'courseLocRoom' => 'BT2',
+                'coursePreReq' => null,
+                'courseDate' => 'Tuesday',
+                'courseTime' => '09:00-11:00',
+                'progCode' => 'SECBH',
+            ],
+            [
+                'courseCode' => 'SEBB4193',
+                'courseName' => 'Gene and Protein Technology',
+                'courseDesc' => 'Techniques and applications of gene and protein technology.',
+                'courseSem' => 1,
+                'courseCreds' => 3,
+                'courseLocBuilding' => 'N28',
+                'courseLocRoom' => 'BK5',
+                'coursePreReq' => null,
+                'courseDate' => 'Monday',
+                'courseTime' => '08:00-10:00',
+                'progCode' => 'SECBH',
+            ],
+
+            // 2nd Semester
+            [
+                'courseCode' => 'SECB3213',
+                'courseName' => 'Bioinformatics Database',
+                'courseDesc' => 'Design and management of bioinformatics databases.',
+                'courseSem' => 2,
+                'courseCreds' => 3,
+                'courseLocBuilding' => 'N28',
+                'courseLocRoom' => 'MPK1',
+                'coursePreReq' => null,
+                'courseDate' => 'Friday',
+                'courseTime' => '10:00-12:00',
+                'progCode' => 'SECBH',
+            ],
+            [
+                'courseCode' => 'SECB4313',
+                'courseName' => 'Bioinformatics Modelling and Simulation',
+                'courseDesc' => 'Techniques for modelling and simulating biological systems.',
+                'courseSem' => 2,
+                'courseCreds' => 4,
+                'courseLocBuilding' => 'N28A',
+                'courseLocRoom' => 'MPK2',
+                'coursePreReq' => 'SEBB4193',
+                'courseDate' => 'Thursday',
+                'courseTime' => '14:00-17:00',
+                'progCode' => 'SECBH',
+            ],
+
+            // 3rd Semester
+            [
+                'courseCode' => 'SECB3032',
+                'courseName' => 'Bioinformatics Project',
+                'courseDesc' => 'Comprehensive bioinformatics project work and research.',
+                'courseSem' => 3,
+                'courseCreds' => 4,
+                'courseLocBuilding' => 'N28',
+                'courseLocRoom' => 'MPK10',
+                'coursePreReq' => null,
+                'courseDate' => 'Thursday',
+                'courseTime' => '09:00-13:00',
+                'progCode' => 'SECBH',
+            ],
+            [
+                'courseCode' => 'SECB4213',
+                'courseName' => 'Bioinformatics Visualization',
+                'courseDesc' => 'Techniques for visualizing biological data and information.',
+                'courseSem' => 3,
+                'courseCreds' => 3,
+                'courseLocBuilding' => 'N28A',
+                'courseLocRoom' => 'MPK9',
+                'coursePreReq' => null,
+                'courseDate' => 'Wednesday',
+                'courseTime' => '10:00-13:00',
+                'progCode' => 'SECBH',
+            ],
+        ]);
+
+        // Courses for Chemistry (SSCAH)
+        DB::table('course')->insertOrIgnore([
+            // 1st Semester
+            [
+                'courseCode' => 'SSCC1703',
+                'courseName' => 'Inorganic Chemistry',
+                'courseDesc' => 'Study of inorganic chemical compounds and reactions.',
+                'courseSem' => 1,
+                'courseCreds' => 3,
+                'courseLocBuilding' => 'C06',
+                'courseLocRoom' => 'BK1',
+                'coursePreReq' => null,
+                'courseDate' => 'Thursday',
+                'courseTime' => '15:00-17:00',
+                'progCode' => 'SSCAH',
+            ],
+            [
+                'courseCode' => 'SSCC1014',
+                'courseName' => 'Principles of Chemistry',
+                'courseDesc' => 'Fundamental principles and concepts of chemistry.',
+                'courseSem' => 1,
+                'courseCreds' => 2,
+                'courseLocBuilding' => 'C05',
+                'courseLocRoom' => 'BK4',
+                'coursePreReq' => null,
+                'courseDate' => 'Monday',
+                'courseTime' => '08:00-10:00',
+                'progCode' => 'SSCAH',
+            ],
+
+            // 2nd Semester
+            [
+                'courseCode' => 'SSCC2453',
+                'courseName' => 'Chemical Kinetics and Electrochemistry',
+                'courseDesc' => 'Study of reaction rates and electrochemical processes.',
+                'courseSem' => 2,
+                'courseCreds' => 3,
+                'courseLocBuilding' => 'C06',
+                'courseLocRoom' => 'BK2',
+                'coursePreReq' => 'SSCC1014',
+                'courseDate' => 'Friday',
+                'courseTime' => '09:00-11:00',
+                'progCode' => 'SSCAH',
+            ],
+            [
+                'courseCode' => 'SSCC2473',
+                'courseName' => 'Molecular Spectroscopy',
+                'courseDesc' => 'Techniques and applications of molecular spectroscopy.',
+                'courseSem' => 2,
+                'courseCreds' => 3,
+                'courseLocBuilding' => 'C06',
+                'courseLocRoom' => 'BK3',
+                'coursePreReq' => null,
+                'courseDate' => 'Wednesday',
+                'courseTime' => '10:00-13:00',
+                'progCode' => 'SSCAH',
+            ],
+
+            // 3rd Semester
+            [
+                'courseCode' => 'SSCC3463',
+                'courseName' => 'Quantum Chemistry',
+                'courseDesc' => 'Introduction to quantum chemistry principles and applications.',
+                'courseSem' => 3,
+                'courseCreds' => 3,
+                'courseLocBuilding' => 'C05',
+                'courseLocRoom' => 'BK2',
+                'coursePreReq' => null,
+                'courseDate' => 'Monday',
+                'courseTime' => '13:00-15:00',
+                'progCode' => 'SSCAH',
+            ],
+            [
+                'courseCode' => 'SSCC4733',
+                'courseName' => 'Radiochemistry',
+                'courseDesc' => 'Study of radioactive materials and their chemical properties.',
+                'courseSem' => 3,
+                'courseCreds' => 3,
+                'courseLocBuilding' => 'C06',
+                'courseLocRoom' => 'BK5',
+                'coursePreReq' => null,
+                'courseDate' => 'Wednesday',
+                'courseTime' => '10:00-13:00',
+                'progCode' => 'SSCAH',
+            ],
+        ]);
+
+        // Courses for Mathematics (SSCEH)
+        DB::table('course')->insertOrIgnore([
+            // 1st Semester
+            [
+                'courseCode' => 'SSCM1012',
+                'courseName' => 'Introduction to Mathematics Program',
+                'courseDesc' => 'Overview of mathematical concepts and techniques.',
+                'courseSem' => 1,
+                'courseCreds' => 2,
+                'courseLocBuilding' => 'C03',
+                'courseLocRoom' => 'BK7',
+                'coursePreReq' => null,
+                'courseDate' => 'Wednesday',
+                'courseTime' => '08:00-10:00',
+                'progCode' => 'SSCEH',
+            ],
+            [
+                'courseCode' => 'SSCM1523',
+                'courseName' => 'Linear Algebra',
+                'courseDesc' => 'Fundamental principles and concepts of linear algebra.',
+                'courseSem' => 1,
+                'courseCreds' => 3,
+                'courseLocBuilding' => 'C02',
+                'courseLocRoom' => 'BK2',
+                'coursePreReq' => null,
+                'courseDate' => 'Wednesday',
+                'courseTime' => '10:00-13:00',
+                'progCode' => 'SSCEH',
+            ],
+
+            // 2nd Semester
+            [
+                'courseCode' => 'SSCM2793',
+                'courseName' => 'Vector Calculus',
+                'courseDesc' => 'Study of vector calculus and its applications.',
+                'courseSem' => 2,
+                'courseCreds' => 3,
+                'courseLocBuilding' => 'C03',
+                'courseLocRoom' => 'BK4',
+                'coursePreReq' => null,
+                'courseDate' => 'Tuesday',
+                'courseTime' => '11:00-13:00',
+                'progCode' => 'SSCEH',
+            ],
+            [
+                'courseCode' => 'SSCM3703',
+                'courseName' => 'Partial Differential Equations',
+                'courseDesc' => 'Techniques for solving partial differential equations.',
+                'courseSem' => 2,
+                'courseCreds' => 3,
+                'courseLocBuilding' => 'C02',
+                'courseLocRoom' => 'BT2',
+                'coursePreReq' => 'SSCM1523',
+                'courseDate' => 'Monday',
+                'courseTime' => '15:00-17:00',
+                'progCode' => 'SSCEH',
+            ],
+
+            // 3rd Semester
+            [
+                'courseCode' => 'SSCM4683',
+                'courseName' => 'Topology',
+                'courseDesc' => 'Introduction to topological concepts and structures.',
+                'courseSem' => 3,
+                'courseCreds' => 4,
+                'courseLocBuilding' => 'C02',
+                'courseLocRoom' => 'BK1',
+                'coursePreReq' => null,
+                'courseDate' => 'Thursday',
+                'courseTime' => '14:00-18:00',
+                'progCode' => 'SSCEH',
+            ],
+            [
+                'courseCode' => 'SSCM4623',
+                'courseName' => 'Non-Euclidean Geometry',
+                'courseDesc' => 'Study of non-Euclidean geometrical systems and their properties.',
+                'courseSem' => 3,
+                'courseCreds' => 3,
+                'courseLocBuilding' => 'C02',
+                'courseLocRoom' => 'BK1',
+                'coursePreReq' => null,
+                'courseDate' => 'Monday',
+                'courseTime' => '15:00-17:00',
+                'progCode' => 'SSCEH',
+            ],
+        ]);
+    }
+}

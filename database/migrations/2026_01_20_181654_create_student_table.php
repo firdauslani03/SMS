@@ -25,6 +25,9 @@ return new class extends Migration
             $table->string('subNum', 8);
             $table->decimal('cgpa', 3, 2);
 
+            $table->string('facCode');
+            $table->foreign('facCode')->references('facCode')->on('faculty');
+
             $table->string('progCode');
             $table->foreign('progCode')->references('progCode')->on('programme');
         });
