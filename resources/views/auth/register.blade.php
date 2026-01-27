@@ -1,4 +1,4 @@
-<x-guest-layout>
+<x-guest-layout title="Registration">
     <div class="min-h-screen flex flex-col items-center justify-center bg-brand-dark py-12 px-4 sm:px-6 lg:px-8 transition-colors duration-500">
         
         <div class="mb-10 animate-fade-in-up">
@@ -216,7 +216,6 @@
             const progSelect = document.getElementById('progCode');
             const selectedFaculty = facultySelect.value;
             
-            // Clear current options
             progSelect.innerHTML = '<option value="" disabled selected>Select Programme</option>';
             
             if (selectedFaculty && programmes[selectedFaculty]) {
