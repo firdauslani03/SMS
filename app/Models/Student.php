@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Models\Programme;
 
 class Student extends Authenticatable
 {
@@ -38,5 +39,10 @@ class Student extends Authenticatable
     {
         // Matches Student's progCode with Course's progCode
         return $this->hasMany(Course::class, 'progCode', 'progCode')->orderBy('courseSem');
+    }
+
+    public function programme()
+    {
+        return $this->belongsTo(Programme::class, 'progCode', 'progCode');
     }
 }

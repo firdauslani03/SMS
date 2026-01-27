@@ -1,102 +1,145 @@
-<x-app-layout title="Dashboard">
-    <div class="py-12">
+<x-app-layout title="Student Dashboard">
+    <div class="py-10">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             
             <div class="mb-8 animate-fade-in-up">
-                <h1 class="text-3xl font-bold text-brand-white">
-                    Academic Roadmap
+                <h1 class="text-4xl font-extrabold text-brand-white tracking-tight drop-shadow-md">
+                    Hello, <span class="text-brand-medium">{{ Auth::user()->fName }} {{ Auth::user()->lName }}</span>
                 </h1>
-                <p class="text-brand-light mt-1">
-                    Program Structure for <span class="text-brand-medium font-semibold">{{ Auth::user()->progCode }}</span>
+                <p class="text-brand-light mt-2 text-lg font-medium">
+                    Program Structure for 
+                    <span class="px-3 py-1 rounded-lg bg-brand-white/20 border border-brand-white/20 text-brand-white font-bold shadow-lg">
+                        {{ Auth::user()->progCode }}
+                    </span>
                 </p>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="grid grid-cols-1 lg:grid-cols-5 gap-6">
                 
-                <div class="lg:col-span-1 animate-fade-in-up delay-100">
-                    <div class="bg-brand-white/10 backdrop-blur-lg rounded-2xl p-6 shadow-xl border border-brand-medium/20 sticky top-6">
-                        <div class="flex items-center space-x-4 mb-6">
-                            <div class="h-16 w-16 rounded-full bg-gradient-to-br from-brand-medium to-brand-dark flex items-center justify-center text-brand-white text-2xl font-bold shadow-lg">
-                                {{ substr(Auth::user()->fName, 0, 1) }}
+                <div class="lg:col-span-2 animate-fade-in-up delay-100">
+                    <div class="bg-brand-white/10 backdrop-blur-xl rounded-3xl p-8 shadow-2xl border border-brand-white/20 sticky top-24">
+                        
+                        <div class="flex flex-col items-center text-center mb-6">
+                            <div class="h-28 w-28 rounded-full bg-gradient-to-br from-brand-medium to-brand-light p-1.5 shadow-2xl mb-4">
+                                <div class="h-full w-full rounded-full bg-brand-dark flex items-center justify-center border-[4px] border-brand-dark">
+                                    <span class="text-4xl font-bold text-brand-white">{{ substr(Auth::user()->fName, 0, 1) }}</span>
+                                </div>
                             </div>
-                            <div>
-                                <h2 class="text-xl font-bold text-brand-white">{{ Auth::user()->fName }} {{ Auth::user()->lName }}</h2>
-                                <p class="text-brand-medium font-medium">{{ Auth::user()->matricNum }}</p>
-                            </div>
+                            <h2 class="text-3xl font-bold text-brand-white leading-tight mb-1">{{ Auth::user()->fName }} {{ Auth::user()->lName }}</h2>
+                            <p class="text-brand-medium text-lg font-medium tracking-wide">{{ Auth::user()->matricNum }}</p>
                         </div>
 
-                        <div class="space-y-4">
+                        <div class="space-y-5">
                             <div class="grid grid-cols-2 gap-4">
-                                <div class="p-4 rounded-xl bg-brand-dark/30 border border-brand-white/5">
-                                    <p class="text-xs text-brand-light uppercase tracking-wider">Current Sem</p>
-                                    <p class="text-brand-white font-bold text-xl">{{ Auth::user()->semester }}</p>
+                                <div class="p-5 rounded-2xl bg-brand-medium text-center shadow-lg transform transition hover:scale-105 duration-200">
+                                    <p class="text-xs text-brand-dark/80 uppercase font-bold tracking-wider mb-1">Sem</p>
+                                    <p class="text-brand-dark font-extrabold text-3xl">{{ Auth::user()->semester }}</p>
                                 </div>
-                                <div class="p-4 rounded-xl bg-brand-dark/30 border border-brand-white/5">
-                                    <p class="text-xs text-brand-light uppercase tracking-wider">CGPA</p>
-                                    <p class="text-brand-medium font-bold text-xl">{{ number_format(Auth::user()->cgpa, 2) }}</p>
+                                <div class="p-5 rounded-2xl bg-brand-light text-center shadow-lg transform transition hover:scale-105 duration-200">
+                                    <p class="text-xs text-brand-dark/80 uppercase font-bold tracking-wider mb-1">CGPA</p>
+                                    <p class="text-brand-dark font-extrabold text-3xl">{{ number_format(Auth::user()->cgpa, 2) }}</p>
                                 </div>
                             </div>
 
-                            <div class="p-4 rounded-xl bg-brand-dark/30 border border-brand-white/5">
-                                <p class="text-xs text-brand-light uppercase tracking-wider">Program</p>
-                                <p class="text-brand-white font-semibold">{{ Auth::user()->progCode }}</p>
-                                <p class="text-xs text-brand-light mt-1">{{ Auth::user()->facCode }}</p>
+                            <div class="p-6 rounded-2xl bg-brand-white/10 border border-brand-white/20">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm text-brand-medium uppercase font-bold tracking-wider">Faculty</span>
+                                    <span class="px-3 py-1 rounded-lg bg-brand-white/20 text-brand-white text-sm font-bold border border-brand-white/10">{{ Auth::user()->facCode }}</span>
+                                </div>
+                                <div class="mt-4">
+                                    <p class="text-sm text-brand-medium uppercase font-bold tracking-wider mb-1">Program Name</p>
+                                    <p class="text-brand-light font-medium text-base leading-snug">
+                                        {{ Auth::user()->programme->progName ?? Auth::user()->progCode }}
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="lg:col-span-2 space-y-8">
+                <div class="lg:col-span-3 space-y-6">
                     
                     @if($curriculum->isEmpty())
-                         <div class="bg-brand-white/10 backdrop-blur-lg rounded-2xl p-8 text-center border border-brand-medium/20">
-                            <p class="text-brand-light">No curriculum data found for this program code.</p>
+                         <div class="bg-brand-white/10 backdrop-blur-lg rounded-[2rem] p-10 text-center border border-brand-white/20">
+                            <p class="text-brand-light text-lg">No curriculum data found.</p>
                          </div>
                     @else
                         @foreach($curriculum as $sem => $courses)
                             @php
-                                $isCurrentSem = ($sem == Auth::user()->semester);
+                                $currentSem = Auth::user()->semester;
+                                $isCurrentSem = ($sem == $currentSem);
+                                $isPastSem = ($sem < $currentSem);
+                                
                                 $cardClasses = $isCurrentSem 
-                                    ? 'bg-brand-white/15 border-brand-medium shadow-[0_0_15px_rgba(var(--color-brand-medium),0.3)] transform scale-[1.02]' 
-                                    : 'bg-brand-white/5 border-brand-white/10 opacity-70 hover:opacity-100';
+                                    ? 'bg-brand-light text-brand-dark shadow-[0_0_30px_rgba(220,214,247,0.5)] border-none' 
+                                    : 'bg-brand-white/20 border border-brand-white/20';
+                                
+                                $headerText = $isCurrentSem ? 'text-brand-dark' : 'text-brand-white';
+                                $subText = $isCurrentSem ? 'text-brand-dark/70' : 'text-brand-medium';
+                                
+                                if ($isCurrentSem) {
+                                    $badgeText = "IN PROGRESS";
+                                    $badgeClass = "bg-brand-dark text-brand-white";
+                                } elseif ($isPastSem) {
+                                    $badgeText = "COMPLETED";
+                                    $badgeClass = "bg-brand-medium text-brand-dark";
+                                } else {
+                                    $badgeText = "";
+                                    $badgeClass = "";
+                                }
+                                
+                                $tableHeaderBg = $isCurrentSem ? 'bg-brand-dark/10 text-brand-dark' : 'bg-brand-white/30 text-brand-white';
+                                $rowBg = $isCurrentSem ? 'bg-brand-white/40' : 'bg-brand-white/20';
+                                $rowHover = $isCurrentSem 
+                                    ? 'hover:bg-brand-white hover:shadow-lg hover:scale-[1.01]' 
+                                    : 'hover:bg-brand-white/40 hover:shadow-lg hover:scale-[1.01]';
+                                
+                                $codeColor = $isCurrentSem ? 'text-brand-dark font-extrabold' : 'text-brand-light font-bold';
+                                $textColor = $isCurrentSem ? 'text-brand-dark' : 'text-brand-white';
                             @endphp
 
-                            <div class="rounded-2xl p-6 backdrop-blur-md border transition-all duration-300 {{ $cardClasses }} animate-fade-in-up">
-                                <div class="flex items-center justify-between mb-4">
-                                    <h3 class="text-xl font-bold text-brand-white">
-                                        Semester {{ $sem }}
-                                    </h3>
-                                    @if($isCurrentSem)
-                                        <span class="px-3 py-1 rounded-full bg-brand-medium text-brand-dark text-xs font-bold shadow-lg">
-                                            CURRENT
+                            <div class="rounded-[2rem] p-6 backdrop-blur-md {{ $cardClasses }} animate-fade-in-up">
+                                <div class="flex items-center justify-between mb-5">
+                                    <div class="flex items-center gap-4">
+                                        <div class="flex items-center justify-center w-10 h-10 rounded-full {{ $isCurrentSem ? 'bg-brand-dark text-brand-white' : 'bg-brand-white/20 text-brand-white' }} font-bold text-lg shadow-md">
+                                            {{ $sem }}
+                                        </div>
+                                        <div>
+                                            <h3 class="text-2xl font-bold {{ $headerText }}">
+                                                Semester {{ $sem }}
+                                            </h3>
+                                            @if($isCurrentSem)
+                                                <p class="text-xs font-bold uppercase tracking-widest {{ $subText }}">Current Session</p>
+                                            @endif
+                                        </div>
+                                    </div>
+
+                                    @if($badgeText)
+                                        <span class="px-4 py-1.5 rounded-full {{ $badgeClass }} text-xs font-bold shadow-md tracking-wider">
+                                            {{ $badgeText }}
                                         </span>
                                     @endif
                                 </div>
 
-                                <div class="overflow-hidden rounded-xl border border-brand-white/5">
-                                    <table class="w-full text-left bg-brand-dark/20">
+                                <div class="overflow-hidden rounded-2xl border {{ $isCurrentSem ? 'border-brand-dark/10' : 'border-brand-white/10' }}">
+                                    <table class="w-full text-left border-collapse">
                                         <thead>
-                                            <tr class="text-brand-light text-xs uppercase tracking-wider bg-brand-white/5">
-                                                <th class="py-3 px-4 font-medium">Code</th>
-                                                <th class="py-3 px-4 font-medium">Course Name</th>
-                                                <th class="py-3 px-4 text-center font-medium">Credit</th>
+                                            <tr class="{{ $tableHeaderBg }} text-xs uppercase tracking-wider">
+                                                <th class="py-3 px-5 font-bold">Code</th>
+                                                <th class="py-3 px-5 font-bold">Course Name</th>
+                                                <th class="py-3 px-5 text-center font-bold">Credit</th>
                                             </tr>
                                         </thead>
-                                        <tbody class="divide-y divide-brand-white/5">
+                                        <tbody class="divide-y {{ $isCurrentSem ? 'divide-brand-dark/10' : 'divide-brand-white/10' }}">
                                             @foreach($courses as $course)
-                                                <tr class="hover:bg-brand-white/5 transition-colors">
-                                                    <td class="py-3 px-4 text-brand-medium font-bold text-sm whitespace-nowrap">
+                                                <tr class="{{ $rowBg }} {{ $rowHover }} transition-all duration-200 cursor-default">
+                                                    <td class="py-4 px-5 {{ $codeColor }} text-sm whitespace-nowrap">
                                                         {{ $course->courseCode }}
                                                     </td>
-                                                    <td class="py-3 px-4 text-brand-white text-sm">
+                                                    <td class="py-4 px-5 {{ $textColor }} text-sm font-medium">
                                                         {{ $course->courseName }}
-                                                        @if($course->coursePreReq)
-                                                            <div class="text-xs text-brand-light/60 mt-0.5">
-                                                                Pre-req: {{ $course->coursePreReq }}
-                                                            </div>
-                                                        @endif
                                                     </td>
-                                                    <td class="py-3 px-4 text-center text-brand-light text-sm">
+                                                    <td class="py-4 px-5 text-center {{ $textColor }} text-sm font-bold opacity-80">
                                                         {{ $course->courseCreds }}
                                                     </td>
                                                 </tr>

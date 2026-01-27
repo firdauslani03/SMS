@@ -14,4 +14,13 @@
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    </html>
+    <body class="font-sans antialiased bg-brand-dark text-brand-light">
+        <div class="min-h-screen flex flex-col">
+            @include('layouts.navigation')
+
+            <main class="flex-1 pt-20">
+                {{ $slot }}
+            </main>
+        </div>
+    </body>
+</html>
