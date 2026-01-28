@@ -11,7 +11,7 @@
             </div>
 
             <div class="hidden sm:flex items-center">
-                <a href="#" class="px-8 py-3 rounded-2xl bg-brand-light text-brand-dark font-bold shadow-[0_0_15px_rgba(220,214,247,0.3)] hover:bg-brand-white hover:text-brand-dark hover:shadow-[0_0_25px_rgba(244,238,255,0.6)] transition-all duration-300 ease-out transform hover:-translate-y-1 tracking-wide border border-transparent">
+                <a href="{{ route('course.registration') }}" class="px-8 py-3 rounded-2xl bg-brand-light text-brand-dark font-bold shadow-[0_0_15px_rgba(220,214,247,0.3)] hover:bg-brand-white hover:text-brand-dark hover:shadow-[0_0_25px_rgba(244,238,255,0.6)] transition-all duration-300 ease-out transform hover:-translate-y-1 tracking-wide border border-transparent">
                     Register Course
                 </a>
             </div>
@@ -54,7 +54,7 @@
                 {{ __('Home') }}
             </x-responsive-nav-link>
             
-            <a href="#" class="block w-full pl-3 pr-4 py-2 border-l-4 border-transparent text-left text-base font-medium text-brand-dark bg-brand-light hover:bg-brand-white transition duration-150 ease-in-out">
+            <a href="{{ route('course.registration') }}" class="block w-full pl-3 pr-4 py-2 border-l-4 border-transparent text-left text-base font-medium text-brand-dark bg-brand-light hover:bg-brand-white transition duration-150 ease-in-out">
                 Register Course
             </a>
         </div>

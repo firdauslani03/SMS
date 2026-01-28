@@ -16,4 +16,12 @@ class Course extends Model
         'courseCode', 'courseName', 'courseDesc', 'courseSem', 'courseCreds',
         'courseLocBuilding', 'courseLocRoom', 'coursePreReq', 'courseDate', 'courseTime', 'progCode'
     ];
+
+    /**
+     * Get the programme that owns the course.
+     */
+    public function programme()
+    {
+        return $this->belongsTo(Programme::class, 'progCode', 'progCode');
+    }
 }
