@@ -2,6 +2,7 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             
+            {{-- Page Header --}}
             <div class="mb-8 animate-fade-in-up">
                 <h1 class="text-4xl font-extrabold text-brand-white tracking-tight drop-shadow-md">
                     Course Registration
@@ -13,6 +14,7 @@
 
             <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
                 
+                {{-- Sidebar Navigation --}}
                 <div class="lg:col-span-1 animate-fade-in-up delay-100">
                     <nav class="bg-brand-white/15 backdrop-blur-xl rounded-3xl p-6 shadow-xl border border-brand-white/20 sticky top-24 space-y-3">
                         
@@ -42,53 +44,167 @@
                     </nav>
                 </div>
 
+                {{-- Main Content Area --}}
                 <div class="lg:col-span-3 space-y-6 animate-fade-in-up delay-200">
                     
                     <div class="bg-brand-white/10 backdrop-blur-lg rounded-3xl p-8 border border-brand-white/20">
-                        <h2 class="text-2xl font-bold text-brand-white mb-6">Available Courses</h2>
+                        
+                        {{-- Container Header: Title + Student Info Badge --}}
+                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+                            <h2 class="text-2xl font-bold text-brand-white">Available Courses</h2>
+                            
+                            {{-- Student Info Badge --}}
+                            <div class="flex items-center gap-3 bg-brand-white/5 border border-brand-white/10 px-4 py-2 rounded-xl backdrop-blur-sm shadow-sm">
+                                <div class="text-right">
+                                    <span class="block text-[10px] font-bold text-brand-light/60 uppercase tracking-widest">
+                                        Current Session
+                                    </span>
+                                    <span class="block text-brand-white font-bold text-sm">
+                                        {{ Auth::user()->progCode }} 
+                                        <span class="text-brand-medium/50 mx-1">•</span> 
+                                        Sem {{ Auth::user()->semester }}
+                                    </span>
+                                </div>
+                                <div class="bg-brand-medium/20 p-2 rounded-lg text-brand-medium">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
 
+                        {{-- Search & Filter Form --}}
+                        <form method="GET" action="{{ route('course.registration') }}" class="mb-8">
+                            <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+                                
+                                {{-- Search Input --}}
+                                <div class="md:col-span-6 relative group">
+                                    <input type="text" name="search" value="{{ request('search') }}" 
+                                           placeholder="Search course name or code..."
+                                           class="w-full bg-brand-white/20 border border-brand-white/20 text-brand-white font-bold placeholder-brand-light rounded-xl pl-12 pr-4 py-3 focus:ring-2 focus:ring-brand-medium focus:border-transparent focus:bg-brand-white/30 transition-all outline-none shadow-inner">
+                                    
+                                    <div class="absolute left-4 top-3.5 text-brand-light group-focus-within:text-brand-white transition-colors">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                        </svg>
+                                    </div>
+                                </div>
+
+                                {{-- Programme Filter --}}
+                                <div class="md:col-span-3 relative">
+                                    <select name="programme" onchange="this.form.submit()" 
+                                            class="w-full bg-brand-white/20 border border-brand-white/20 text-brand-white font-bold rounded-xl px-4 py-3 focus:ring-2 focus:ring-brand-medium focus:border-transparent outline-none cursor-pointer appearance-none shadow-sm">
+                                        <option value="all" class="text-brand-dark bg-brand-medium">All Programmes</option>
+                                        @foreach($programmes as $prog)
+                                            <option value="{{ $prog->progCode }}" class="text-brand-dark bg-brand-white" {{ request('programme') == $prog->progCode ? 'selected' : '' }}>
+                                                {{ $prog->progCode }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    <div class="absolute right-4 top-4 pointer-events-none text-brand-light">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                                        </svg>
+                                    </div>
+                                </div>
+
+                                {{-- Semester Filter --}}
+                                <div class="md:col-span-3 relative">
+                                    <select name="semester" onchange="this.form.submit()" 
+                                            class="w-full bg-brand-white/20 border border-brand-white/20 text-brand-white font-bold rounded-xl px-4 py-3 focus:ring-2 focus:ring-brand-medium focus:border-transparent outline-none cursor-pointer appearance-none shadow-sm">
+                                        <option value="all" class="text-brand-dark bg-brand-medium">All Semesters</option>
+                                        @foreach($semesters as $sem)
+                                            <option value="{{ $sem }}" class="text-brand-dark bg-brand-white" {{ request('semester') == $sem ? 'selected' : '' }}>
+                                                Semester {{ $sem }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    <div class="absolute right-4 top-4 pointer-events-none text-brand-light">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+
+                        {{-- Course List & Pagination --}}
                         @if($courses->isEmpty())
-                            <div class="text-center py-12">
-                                <p class="text-brand-light text-lg">No courses found for your faculty.</p>
+                            <div class="text-center py-16 flex flex-col items-center justify-center">
+                                <div class="bg-brand-white/5 p-4 rounded-full mb-4">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-brand-light/50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                </div>
+                                <p class="text-brand-light text-lg font-medium">No courses found matching your criteria.</p>
+                                <a href="{{ route('course.registration') }}" class="mt-4 text-sm text-brand-medium hover:text-brand-white underline transition-colors">
+                                    Clear all filters
+                                </a>
                             </div>
                         @else
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            {{-- List View Container --}}
+                            <div class="flex flex-col gap-4">
                                 @foreach($courses as $course)
-                                    <div class="group relative bg-[#9095CA]/25 border border-[#9095CA]/40 rounded-2xl p-6 hover:bg-[#9095CA]/35 hover:border-[#9095CA]/60 transition-all duration-300 shadow-xl hover:shadow-[0_0_25px_rgba(144,149,202,0.4)] hover:-translate-y-1">
+                                    <div class="group relative bg-brand-white/20 backdrop-blur-md border border-brand-white/20 rounded-2xl p-6 hover:bg-brand-light hover:border-brand-light transition-all duration-300 shadow-xl hover:shadow-[0_0_25px_rgba(166,177,225,0.5)] hover:-translate-y-1">
                                         
-                                        <div class="flex justify-between items-start mb-4">
-                                            <div class="bg-brand-dark/90 text-[#9095CA] font-extrabold px-3 py-1 rounded-lg text-sm shadow-md border border-[#9095CA]/30">
-                                                {{ $course->courseCode }}
+                                        <div class="flex flex-col md:flex-row items-center gap-6">
+                                            
+                                            {{-- Section 1: Code & Credits --}}
+                                            <div class="flex flex-row md:flex-col items-center md:items-start justify-center gap-3 md:gap-2 w-full md:w-32 flex-shrink-0">
+                                                <div class="bg-brand-medium text-brand-dark font-extrabold px-3 py-1 rounded-lg text-sm shadow-md group-hover:bg-brand-dark group-hover:text-brand-light transition-colors text-center w-full md:w-auto">
+                                                    {{ $course->courseCode }}
+                                                </div>
+                                                <span class="text-brand-white text-xs font-bold border border-brand-medium/50 px-2 py-1 rounded shadow-sm group-hover:text-brand-dark group-hover:border-brand-dark/30 transition-colors whitespace-nowrap">
+                                                    {{ $course->courseCreds }} Credits
+                                                </span>
                                             </div>
-                                            <span class="text-brand-dark text-sm font-bold bg-[#9095CA] px-2 py-1 rounded shadow-sm">
-                                                {{ $course->courseCreds }} Credits
-                                            </span>
+
+                                            {{-- Section 2: Course Info --}}
+                                            <div class="flex-1 text-center md:text-left w-full border-t md:border-t-0 md:border-l border-brand-white/10 pt-4 md:pt-0 md:pl-6">
+                                                <h3 class="text-xl md:text-2xl font-bold text-brand-white mb-2 leading-tight group-hover:text-brand-dark transition-colors">
+                                                    {{ $course->courseName }}
+                                                </h3>
+                                                
+                                                <div class="flex items-center justify-center md:justify-start gap-2">
+                                                    <span class="text-xs font-bold text-brand-light/80 uppercase tracking-wider group-hover:text-brand-dark/70 transition-colors">
+                                                        Sem {{ $course->courseSem }}
+                                                    </span>
+                                                    <span class="text-brand-light/40 group-hover:text-brand-dark/40 transition-colors">•</span>
+                                                    <span class="text-xs font-bold text-brand-light/80 uppercase tracking-wider group-hover:text-brand-dark/70 transition-colors">
+                                                        {{ $course->progCode }}
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            {{-- Section 3: Action Buttons (Info + Add) --}}
+                                            <div class="w-full md:w-48 flex-shrink-0 mt-2 md:mt-0 flex gap-2">
+                                                
+                                                {{-- INFO BUTTON --}}
+                                                <button x-data x-on:click="$dispatch('open-modal', 'course-info-{{ $course->courseCode }}')" 
+                                                        class="p-3 rounded-xl bg-brand-white/10 text-brand-light hover:bg-brand-white hover:text-brand-dark border border-brand-white/10 transition-all duration-300 shadow-lg group/info">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 transform group-hover/info:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                                    </svg>
+                                                </button>
+
+                                                {{-- ADD BUTTON --}}
+                                                <button class="flex-1 py-3 rounded-xl bg-brand-medium text-brand-dark font-bold hover:bg-brand-dark hover:text-brand-white group-hover:bg-brand-dark group-hover:text-brand-white transition-all duration-300 shadow-lg flex items-center justify-center gap-2">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd" />
+                                                    </svg>
+                                                    Add
+                                                </button>
+                                            </div>
+
                                         </div>
-
-                                        <h3 class="text-2xl font-bold text-brand-white mb-2 leading-tight group-hover:text-[#9095CA] transition-colors">
-                                            {{ $course->courseName }}
-                                        </h3>
-                                        
-                                        <div class="flex items-center gap-2 mb-6">
-                                            <span class="text-xs font-bold text-brand-light uppercase tracking-wider">
-                                                Sem {{ $course->courseSem }}
-                                            </span>
-                                            <span class="text-brand-light/50">•</span>
-                                            <span class="text-xs font-bold text-brand-light uppercase tracking-wider">
-                                                {{ $course->progCode }}
-                                            </span>
-                                        </div>
-
-                                        <button class="w-full py-3 rounded-xl bg-[#9095CA] text-brand-dark font-bold hover:bg-brand-white hover:text-brand-dark transition-all duration-300 shadow-lg flex items-center justify-center gap-2">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd" />
-                                            </svg>
-                                            Add Course
-                                        </button>
-
                                     </div>
                                 @endforeach
                             </div>
+
+                            {{-- Pagination Links --}}
+                            <div class="mt-8">
+                                {{ $courses->links('pagination.sms') }}
+                            </div>                            
                         @endif
                     </div>
                 </div>
@@ -96,4 +212,103 @@
             </div>
         </div>
     </div>
+
+    {{-- MODALS CONTAINER --}}
+    @if(!$courses->isEmpty())
+        @foreach($courses as $course)
+            <x-modal name="course-info-{{ $course->courseCode }}" focusable>
+                {{-- SMS Style Modal Card --}}
+                <div class="bg-brand-dark/95 backdrop-blur-xl border border-brand-white/10 rounded-2xl shadow-2xl p-8 text-left relative overflow-hidden">
+                    
+                    {{-- Decorative Glow --}}
+                    <div class="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-brand-medium/20 rounded-full blur-3xl pointer-events-none"></div>
+
+                    {{-- Modal Header --}}
+                    <div class="flex justify-between items-start mb-8 border-b border-brand-white/10 pb-6 relative z-10">
+                        <div>
+                            <div class="flex items-center gap-3 mb-3">
+                                {{-- Increased font size for badges --}}
+                                <span class="bg-brand-medium text-brand-dark text-sm font-extrabold px-3 py-1 rounded-lg shadow-lg">
+                                    {{ $course->courseCode }}
+                                </span>
+                                <span class="text-brand-light/80 text-sm font-bold uppercase tracking-widest">
+                                    {{ $course->progCode }}
+                                </span>
+                            </div>
+                            {{-- Title enlarged to text-4xl --}}
+                            <h2 class="text-4xl font-extrabold text-brand-white leading-tight">
+                                {{ $course->courseName }}
+                            </h2>
+                        </div>
+                        <button x-on:click="$dispatch('close')" class="text-brand-light/50 hover:text-brand-white bg-brand-white/5 hover:bg-brand-white/10 p-2 rounded-full transition-all duration-300">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    {{-- Modal Body --}}
+                    <div class="space-y-8 relative z-10">
+                        
+                        {{-- Description --}}
+                        <div>
+                            <h3 class="text-sm font-bold text-brand-medium uppercase tracking-widest mb-3">Course Description</h3>
+                            {{-- Increased text size to text-lg and brightened background slightly --}}
+                            <p class="text-brand-white leading-relaxed text-lg bg-brand-white/10 p-5 rounded-xl border border-brand-white/5">
+                                {{ $course->courseDesc }}
+                            </p>
+                        </div>
+
+                        {{-- Details Grid --}}
+                        <div class="grid grid-cols-2 gap-5">
+                            
+                            {{-- INFO CARDS: Background changed to bg-brand-white/15 (Lighter) --}}
+                            
+                            {{-- Credits --}}
+                            <div class="bg-brand-white/15 p-5 rounded-xl border border-brand-white/10 hover:border-brand-white/20 transition-colors">
+                                <h4 class="text-xs font-bold text-brand-light/70 uppercase tracking-widest mb-2">Credits</h4>
+                                <p class="text-3xl font-extrabold text-brand-white">{{ $course->courseCreds }}</p>
+                            </div>
+
+                            {{-- Semester --}}
+                            <div class="bg-brand-white/15 p-5 rounded-xl border border-brand-white/10 hover:border-brand-white/20 transition-colors">
+                                <h4 class="text-xs font-bold text-brand-light/70 uppercase tracking-widest mb-2">Semester</h4>
+                                <p class="text-3xl font-extrabold text-brand-white">{{ $course->courseSem }}</p>
+                            </div>
+
+                            {{-- Location --}}
+                            <div class="bg-brand-white/15 p-5 rounded-xl border border-brand-white/10 hover:border-brand-white/20 transition-colors">
+                                <h4 class="text-xs font-bold text-brand-light/70 uppercase tracking-widest mb-2">Location</h4>
+                                <p class="text-lg font-bold text-brand-white break-words">{{ $course->courseLocBuilding }}</p>
+                                <p class="text-base text-brand-medium mt-1 font-semibold">{{ $course->courseLocRoom }}</p>
+                            </div>
+
+                            {{-- Schedule --}}
+                            <div class="bg-brand-white/15 p-5 rounded-xl border border-brand-white/10 hover:border-brand-white/20 transition-colors">
+                                <h4 class="text-xs font-bold text-brand-light/70 uppercase tracking-widest mb-2">Schedule</h4>
+                                <p class="text-lg font-bold text-brand-white">{{ $course->courseDate }}</p>
+                                <p class="text-base text-brand-medium mt-1 font-semibold">{{ $course->courseTime }}</p>
+                            </div>
+
+                            {{-- Prerequisite (Full Width) --}}
+                            <div class="col-span-2 bg-brand-white/15 p-5 rounded-xl border border-brand-white/10 hover:border-brand-white/20 transition-colors flex items-center justify-between">
+                                <h4 class="text-xs font-bold text-brand-light/70 uppercase tracking-widest">Prerequisite</h4>
+                                @if($course->coursePreReq)
+                                    <span class="text-red-300 font-bold text-lg bg-red-500/20 px-4 py-1.5 rounded-lg border border-red-500/30">
+                                        {{ $course->coursePreReq }}
+                                    </span>
+                                @else
+                                    <span class="text-green-300 font-bold text-lg bg-green-500/20 px-4 py-1.5 rounded-lg border border-green-500/30">
+                                        None
+                                    </span>
+                                @endif
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </x-modal>
+        @endforeach
+    @endif
 </x-app-layout>

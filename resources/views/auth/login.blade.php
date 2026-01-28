@@ -39,16 +39,6 @@
                     </div>
                 </div>
 
-                <div class="flex items-center justify-between mt-2">
-                    <div class="flex items-center">
-                        <input id="remember_me" type="checkbox" name="remember" 
-                            class="h-5 w-5 text-brand-medium border-brand-medium/50 rounded bg-brand-white focus:ring-brand-medium focus:ring-offset-brand-dark">
-                        <label for="remember_me" class="ml-2 block text-base text-brand-light hover:text-brand-white transition-colors duration-200">
-                            {{ __('Remember me') }}
-                        </label>
-                    </div>
-                </div>
-
                 <div class="pt-4">
                     <button type="submit" 
                         class="group relative w-full flex justify-center py-3 px-4 border border-transparent text-lg font-bold rounded-xl text-brand-dark bg-brand-medium hover:bg-brand-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-brand-medium transition-all duration-300 ease-in-out transform hover:-translate-y-1 hover:shadow-lg">
