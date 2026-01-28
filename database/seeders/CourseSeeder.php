@@ -27,6 +27,7 @@ class CourseSeeder extends Seeder
                 'courseDate' => 'Monday',
                 'courseTime' => '10:00-12:00',
                 'progCode' => 'SECPH',
+                'staffNum' => 'L1001',
             ],
             [
                 'courseCode' => 'SECP1513',
@@ -40,6 +41,7 @@ class CourseSeeder extends Seeder
                 'courseDate' => 'Tuesday',
                 'courseTime' => '08:00-10:00',
                 'progCode' => 'SECPH',
+                'staffNum' => 'L1007',
             ],
 
             // 2nd Semester
@@ -55,6 +57,7 @@ class CourseSeeder extends Seeder
                 'courseDate' => 'Thursday',
                 'courseTime' => '09:00-13:00',
                 'progCode' => 'SECPH',
+                'staffNum' => 'L1002',
             ],
             [
                 'courseCode' => 'SECP2753',
@@ -68,6 +71,7 @@ class CourseSeeder extends Seeder
                 'courseDate' => 'Wednesday',
                 'courseTime' => '14:00-16:00',
                 'progCode' => 'SECPH',
+                'staffNum' => 'L1001',
             ],
 
             // 3rd Semester
@@ -83,6 +87,7 @@ class CourseSeeder extends Seeder
                 'courseDate' => 'Thursday',
                 'courseTime' => '08:00-12:00',
                 'progCode' => 'SECPH',
+                'staffNum' => 'L1006',
             ],
             [
                 'courseCode' => 'SECP3744',
@@ -96,10 +101,12 @@ class CourseSeeder extends Seeder
                 'courseDate' => 'Tuesday',
                 'courseTime' => '08:00-12:00',
                 'progCode' => 'SECPH',
+                'staffNum' => 'L1002',
             ],
         ]);
 
         // Courses Bioinformatics (SECBH)
+        // Lecturers: L1005 (Bioinformatics), L2003 (Biosciences), L2007 (Biosciences)
         DB::table('course')->insertOrIgnore([
             // 1st Semester
             [
@@ -114,6 +121,7 @@ class CourseSeeder extends Seeder
                 'courseDate' => 'Tuesday',
                 'courseTime' => '09:00-11:00',
                 'progCode' => 'SECBH',
+                'staffNum' => 'L1005',
             ],
             [
                 'courseCode' => 'SEBB4193',
@@ -127,6 +135,7 @@ class CourseSeeder extends Seeder
                 'courseDate' => 'Monday',
                 'courseTime' => '08:00-10:00',
                 'progCode' => 'SECBH',
+                'staffNum' => 'L2003',
             ],
 
             // 2nd Semester
@@ -142,6 +151,7 @@ class CourseSeeder extends Seeder
                 'courseDate' => 'Friday',
                 'courseTime' => '10:00-12:00',
                 'progCode' => 'SECBH',
+                'staffNum' => 'L1005',
             ],
             [
                 'courseCode' => 'SECB4313',
@@ -155,6 +165,7 @@ class CourseSeeder extends Seeder
                 'courseDate' => 'Thursday',
                 'courseTime' => '14:00-17:00',
                 'progCode' => 'SECBH',
+                'staffNum' => 'L2007',
             ],
 
             // 3rd Semester
@@ -170,6 +181,7 @@ class CourseSeeder extends Seeder
                 'courseDate' => 'Thursday',
                 'courseTime' => '09:00-13:00',
                 'progCode' => 'SECBH',
+                'staffNum' => 'L1005',
             ],
             [
                 'courseCode' => 'SECB4213',
@@ -183,6 +195,7 @@ class CourseSeeder extends Seeder
                 'courseDate' => 'Wednesday',
                 'courseTime' => '10:00-13:00',
                 'progCode' => 'SECBH',
+                'staffNum' => 'L2003',
             ],
         ]);
 
@@ -201,6 +214,7 @@ class CourseSeeder extends Seeder
                 'courseDate' => 'Thursday',
                 'courseTime' => '15:00-17:00',
                 'progCode' => 'SSCAH',
+                'staffNum' => 'L2001',
             ],
             [
                 'courseCode' => 'SSCC1014',
@@ -214,6 +228,7 @@ class CourseSeeder extends Seeder
                 'courseDate' => 'Monday',
                 'courseTime' => '08:00-10:00',
                 'progCode' => 'SSCAH',
+                'staffNum' => 'L2005',
             ],
 
             // 2nd Semester
@@ -229,6 +244,7 @@ class CourseSeeder extends Seeder
                 'courseDate' => 'Friday',
                 'courseTime' => '09:00-11:00',
                 'progCode' => 'SSCAH',
+                'staffNum' => 'L2001',
             ],
             [
                 'courseCode' => 'SSCC2473',
@@ -242,6 +258,7 @@ class CourseSeeder extends Seeder
                 'courseDate' => 'Wednesday',
                 'courseTime' => '10:00-13:00',
                 'progCode' => 'SSCAH',
+                'staffNum' => 'L2005',
             ],
 
             // 3rd Semester
@@ -257,6 +274,7 @@ class CourseSeeder extends Seeder
                 'courseDate' => 'Monday',
                 'courseTime' => '13:00-15:00',
                 'progCode' => 'SSCAH',
+                'staffNum' => 'L2001',
             ],
             [
                 'courseCode' => 'SSCC4733',
@@ -270,6 +288,7 @@ class CourseSeeder extends Seeder
                 'courseDate' => 'Wednesday',
                 'courseTime' => '10:00-13:00',
                 'progCode' => 'SSCAH',
+                'staffNum' => 'L2005',
             ],
         ]);
 
@@ -288,6 +307,7 @@ class CourseSeeder extends Seeder
                 'courseDate' => 'Wednesday',
                 'courseTime' => '08:00-10:00',
                 'progCode' => 'SSCEH',
+                'staffNum' => 'L2002',
             ],
             [
                 'courseCode' => 'SSCM1523',
@@ -301,6 +321,7 @@ class CourseSeeder extends Seeder
                 'courseDate' => 'Wednesday',
                 'courseTime' => '10:00-13:00',
                 'progCode' => 'SSCEH',
+                'staffNum' => 'L2006',
             ],
 
             // 2nd Semester
@@ -316,6 +337,7 @@ class CourseSeeder extends Seeder
                 'courseDate' => 'Tuesday',
                 'courseTime' => '11:00-13:00',
                 'progCode' => 'SSCEH',
+                'staffNum' => 'L2002',
             ],
             [
                 'courseCode' => 'SSCM3703',
@@ -329,6 +351,7 @@ class CourseSeeder extends Seeder
                 'courseDate' => 'Monday',
                 'courseTime' => '15:00-17:00',
                 'progCode' => 'SSCEH',
+                'staffNum' => 'L2006',
             ],
 
             // 3rd Semester
@@ -344,6 +367,7 @@ class CourseSeeder extends Seeder
                 'courseDate' => 'Thursday',
                 'courseTime' => '14:00-18:00',
                 'progCode' => 'SSCEH',
+                'staffNum' => 'L2002',
             ],
             [
                 'courseCode' => 'SSCM4623',
@@ -357,6 +381,7 @@ class CourseSeeder extends Seeder
                 'courseDate' => 'Monday',
                 'courseTime' => '15:00-17:00',
                 'progCode' => 'SSCEH',
+                'staffNum' => 'L2006',
             ],
         ]);
     }

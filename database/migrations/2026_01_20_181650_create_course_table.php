@@ -25,6 +25,9 @@ return new class extends Migration
 
             $table->string('progCode');
             $table->foreign('progCode')->references('progCode')->on('programme')->onDelete('cascade');
+
+            $table->string('staffNum');
+            $table->foreign('staffNum')->references('staffNum')->on('lecturer')->onDelete('cascade');
         });
     }
 

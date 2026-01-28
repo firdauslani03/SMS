@@ -14,7 +14,7 @@ class Course extends Model
 
     protected $fillable = [
         'courseCode', 'courseName', 'courseDesc', 'courseSem', 'courseCreds',
-        'courseLocBuilding', 'courseLocRoom', 'coursePreReq', 'courseDate', 'courseTime', 'progCode'
+        'courseLocBuilding', 'courseLocRoom', 'coursePreReq', 'courseDate', 'courseTime', 'progCode', 'staffNum'
     ];
 
     /**
@@ -23,5 +23,14 @@ class Course extends Model
     public function programme()
     {
         return $this->belongsTo(Programme::class, 'progCode', 'progCode');
+    }
+
+    /**
+     * Get the lecturer that teaches the course.
+     */
+    public function lecturer()
+    {
+        // links 'staffNum' in course table to 'staffNum' in lecturer table
+        return $this->belongsTo(Lecturer::class, 'staffNum', 'staffNum');
     }
 }
