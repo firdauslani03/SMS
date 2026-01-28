@@ -45,4 +45,9 @@ class Student extends Authenticatable
     {
         return $this->belongsTo(Programme::class, 'progCode', 'progCode');
     }
+
+    public function faculty()
+    {
+        return $this->belongsTo(Faculty::class, 'facCode', 'facCode');
+    }
 }
