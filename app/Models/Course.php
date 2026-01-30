@@ -13,7 +13,7 @@ class Course extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'courseCode', 'courseName', 'courseDesc', 'courseSem', 'courseCreds',
+        'courseCode', 'courseName', 'courseDesc', 'courseSem', 'courseCreds', 'courseCapacity',
         'courseLocBuilding', 'courseLocRoom', 'coursePreReq', 'courseDate', 'courseTime', 'progCode', 'staffNum'
     ];
 
@@ -32,5 +32,10 @@ class Course extends Model
     {
         // links 'staffNum' in course table to 'staffNum' in lecturer table
         return $this->belongsTo(Lecturer::class, 'staffNum', 'staffNum');
+    }
+
+    public function students()
+    {
+        return $this->belongsToMany(Student::class, 'registration', 'courseCode', 'matricNum');
     }
 }

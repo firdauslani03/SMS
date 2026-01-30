@@ -1,8 +1,14 @@
 <x-app-layout title="Course Registration">
-    <div class="py-12">
+    {{-- 1. ALPINE.JS STATE MANAGEMENT --}}
+    <div class="py-12" x-data="{ 
+        futureModalOpen: false, 
+        confirmModalOpen: false, 
+        targetForm: null,
+        targetSem: '' 
+    }">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             
-            {{-- Page Header --}}
+            {{-- Page Header (Reverted to standard size) --}}
             <div class="mb-8 animate-fade-in-up">
                 <h1 class="text-4xl font-extrabold text-brand-white tracking-tight drop-shadow-md">
                     Course Registration
@@ -10,6 +16,18 @@
                 <p class="text-brand-light mt-2 text-lg font-medium">
                     Faculty of <span class="font-bold text-brand-white">{{ Auth::user()->facCode }}</span>
                 </p>
+                
+                {{-- Flash Messages --}}
+                @if(session('success'))
+                    <div class="mt-4 p-4 bg-green-500/20 border border-green-500/50 text-green-200 rounded-xl">
+                        {{ session('success') }}
+                    </div>
+                @endif
+                @if(session('error'))
+                    <div class="mt-4 p-4 bg-red-500/20 border border-red-500/50 text-red-200 rounded-xl">
+                        {{ session('error') }}
+                    </div>
+                @endif
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
@@ -17,7 +35,6 @@
                 {{-- Sidebar Navigation --}}
                 <div class="lg:col-span-1 animate-fade-in-up delay-100">
                     <nav class="bg-brand-white/15 backdrop-blur-xl rounded-3xl p-6 shadow-xl border border-brand-white/20 sticky top-24 space-y-3">
-                        
                         <a href="{{ route('course.registration') }}" 
                            class="flex items-center gap-4 px-5 py-4 rounded-2xl bg-brand-medium text-brand-dark font-bold shadow-md transform scale-105 transition-all duration-300">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
@@ -25,7 +42,6 @@
                             </svg>
                             <span>Register</span>
                         </a>
-
                         <a href="{{ route('course.roadmap') }}" 
                            class="flex items-center gap-4 px-5 py-4 rounded-2xl bg-brand-white/10 border border-brand-white/10 text-brand-white hover:bg-brand-white/20 hover:scale-105 transition-all duration-300 group shadow-sm">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-brand-light group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -33,7 +49,6 @@
                             </svg>
                             <span class="font-medium">View Courses</span>
                         </a>
-
                         <a href="{{ route('course.submissions') }}" 
                            class="flex items-center gap-4 px-5 py-4 rounded-2xl bg-brand-white/10 border border-brand-white/10 text-brand-white hover:bg-brand-white/20 hover:scale-105 transition-all duration-300 group shadow-sm">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-brand-light group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -47,13 +62,12 @@
                 {{-- Main Content Area --}}
                 <div class="lg:col-span-3 space-y-6 animate-fade-in-up delay-200">
                     
+                    {{-- 1. AVAILABLE COURSES SECTION --}}
                     <div class="bg-brand-white/10 backdrop-blur-lg rounded-3xl p-8 border border-brand-white/20">
                         
-                        {{-- Container Header: Title + Student Info Badge --}}
+                        {{-- Header (Reverted) --}}
                         <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
                             <h2 class="text-2xl font-bold text-brand-white">Available Courses</h2>
-                            
-                            {{-- Student Info Badge --}}
                             <div class="flex items-center gap-3 bg-brand-white/5 border border-brand-white/10 px-4 py-2 rounded-xl backdrop-blur-sm shadow-sm">
                                 <div class="text-right">
                                     <span class="block text-[10px] font-bold text-brand-light/60 uppercase tracking-widest">
@@ -73,24 +87,19 @@
                             </div>
                         </div>
 
-                        {{-- Search & Filter Form --}}
+                        {{-- Search Form (Reverted) --}}
                         <form method="GET" action="{{ route('course.registration') }}" class="mb-8">
                             <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
-                                
-                                {{-- Search Input --}}
                                 <div class="md:col-span-6 relative group">
                                     <input type="text" name="search" value="{{ request('search') }}" 
                                            placeholder="Search course name or code..."
                                            class="w-full bg-brand-white/20 border border-brand-white/20 text-brand-white font-bold placeholder-brand-light rounded-xl pl-12 pr-4 py-3 focus:ring-2 focus:ring-brand-medium focus:border-transparent focus:bg-brand-white/30 transition-all outline-none shadow-inner">
-                                    
                                     <div class="absolute left-4 top-3.5 text-brand-light group-focus-within:text-brand-white transition-colors">
                                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                                         </svg>
                                     </div>
                                 </div>
-
-                                {{-- Programme Filter --}}
                                 <div class="md:col-span-3 relative">
                                     <select name="programme" onchange="this.form.submit()" 
                                             class="w-full bg-brand-white/20 border border-brand-white/20 text-brand-white font-bold rounded-xl px-4 py-3 focus:ring-2 focus:ring-brand-medium focus:border-transparent outline-none cursor-pointer appearance-none shadow-sm">
@@ -101,14 +110,7 @@
                                             </option>
                                         @endforeach
                                     </select>
-                                    <div class="absolute right-4 top-4 pointer-events-none text-brand-light">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-                                        </svg>
-                                    </div>
                                 </div>
-
-                                {{-- Semester Filter --}}
                                 <div class="md:col-span-3 relative">
                                     <select name="semester" onchange="this.form.submit()" 
                                             class="w-full bg-brand-white/20 border border-brand-white/20 text-brand-white font-bold rounded-xl px-4 py-3 focus:ring-2 focus:ring-brand-medium focus:border-transparent outline-none cursor-pointer appearance-none shadow-sm">
@@ -119,239 +121,295 @@
                                             </option>
                                         @endforeach
                                     </select>
-                                    <div class="absolute right-4 top-4 pointer-events-none text-brand-light">
-                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-                                        </svg>
-                                    </div>
                                 </div>
                             </div>
                         </form>
 
-                        {{-- Course List & Pagination --}}
+                        {{-- Course List (Reverted) --}}
                         @if($courses->isEmpty())
                             <div class="text-center py-16 flex flex-col items-center justify-center">
-                                <div class="bg-brand-white/5 p-4 rounded-full mb-4">
-                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-brand-light/50" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                    </svg>
-                                </div>
                                 <p class="text-brand-light text-lg font-medium">No courses found matching your criteria.</p>
-                                <a href="{{ route('course.registration') }}" class="mt-4 text-sm text-brand-medium hover:text-brand-white underline transition-colors">
-                                    Clear all filters
-                                </a>
                             </div>
                         @else
-                            {{-- List View Container --}}
                             <div class="flex flex-col gap-4">
                                 @foreach($courses as $course)
-                                    <div class="group relative bg-brand-white/20 backdrop-blur-md border border-brand-white/20 rounded-2xl p-6 hover:bg-brand-light hover:border-brand-light transition-all duration-300 shadow-xl hover:shadow-[0_0_25px_rgba(166,177,225,0.5)] hover:-translate-y-1">
-                                        
+                                    @php
+                                        $studentSem = Auth::user()->semester;
+                                        $courseSem = $course->courseSem;
+                                        $isFuture = $courseSem > $studentSem;
+                                        $isPast = $courseSem < $studentSem;
+                                        $isRegistered = in_array($course->courseCode, $registeredCourseCodes);
+                                    @endphp
+
+                                    <div class="group relative bg-brand-white/20 backdrop-blur-md border border-brand-white/20 rounded-2xl p-6 hover:bg-brand-light hover:border-brand-light transition-all duration-300 shadow-xl">
                                         <div class="flex flex-col md:flex-row items-center gap-6">
                                             
-                                            {{-- Section 1: Code & Credits --}}
+                                            {{-- Code & Credits (Reverted) --}}
                                             <div class="flex flex-row md:flex-col items-center md:items-start justify-center gap-3 md:gap-2 w-full md:w-32 flex-shrink-0">
-                                                <div class="bg-brand-medium text-brand-dark font-extrabold px-3 py-1 rounded-lg text-sm shadow-md group-hover:bg-brand-dark group-hover:text-brand-light transition-colors text-center w-full md:w-auto">
+                                                <div class="bg-brand-medium text-brand-dark font-extrabold px-3 py-1 rounded-lg text-sm text-center w-full md:w-auto shadow-md transition-all duration-300 group-hover:bg-brand-dark group-hover:text-brand-medium">
                                                     {{ $course->courseCode }}
                                                 </div>
-                                                <span class="text-brand-white text-xs font-bold border border-brand-medium/50 px-2 py-1 rounded shadow-sm group-hover:text-brand-dark group-hover:border-brand-dark/30 transition-colors whitespace-nowrap">
+                                                <span class="text-brand-white text-xs font-bold border border-brand-medium/50 px-2 py-1 rounded whitespace-nowrap shadow-sm transition-all duration-300 group-hover:bg-brand-medium group-hover:text-brand-dark group-hover:border-transparent">
                                                     {{ $course->courseCreds }} Credits
                                                 </span>
                                             </div>
 
-                                            {{-- Section 2: Course Info --}}
+                                            {{-- Course Info & AVAILABILITY (Reverted) --}}
                                             <div class="flex-1 text-center md:text-left w-full border-t md:border-t-0 md:border-l border-brand-white/10 pt-4 md:pt-0 md:pl-6">
                                                 <h3 class="text-xl md:text-2xl font-bold text-brand-white mb-2 leading-tight group-hover:text-brand-dark transition-colors">
                                                     {{ $course->courseName }}
                                                 </h3>
                                                 
-                                                <div class="flex items-center justify-center md:justify-start gap-2">
-                                                    <span class="text-xs font-bold text-brand-light/80 uppercase tracking-wider group-hover:text-brand-dark/70 transition-colors">
-                                                        Sem {{ $course->courseSem }}
-                                                    </span>
-                                                    <span class="text-brand-light/40 group-hover:text-brand-dark/40 transition-colors">•</span>
-                                                    <span class="text-xs font-bold text-brand-light/80 uppercase tracking-wider group-hover:text-brand-dark/70 transition-colors">
-                                                        {{ $course->progCode }}
-                                                    </span>
+                                                <div class="flex flex-wrap items-center justify-center md:justify-start gap-4 mb-2">
+                                                    <div class="flex items-center gap-2">
+                                                        <span class="text-xs font-bold text-brand-light/80 uppercase tracking-wider group-hover:text-brand-dark/70 transition-colors">Sem {{ $course->courseSem }}</span>
+                                                        <span class="text-brand-light/40">•</span>
+                                                        <span class="text-xs font-bold text-brand-light/80 uppercase tracking-wider group-hover:text-brand-dark/70 transition-colors">{{ $course->progCode }}</span>
+                                                    </div>
+                                                </div>
+                                                
+                                                {{-- Availability Section (Reverted to text-lg but keep high contrast) --}}
+                                                <div class="mt-4 w-full max-w-xs">
+                                                    <div class="flex justify-between items-end mb-2">
+                                                        <span class="text-xs font-bold uppercase tracking-widest text-brand-white/70 group-hover:text-brand-dark/70">
+                                                            Registered Students
+                                                        </span>
+                                                        <span class="text-lg font-black text-brand-white drop-shadow-md group-hover:text-brand-dark">
+                                                            {{ $course->students_count }} / {{ $course->courseCapacity }}
+                                                        </span>
+                                                    </div>
+                                                    <div class="h-3 w-full bg-brand-dark/50 rounded-full overflow-hidden border border-brand-white/10 group-hover:border-brand-dark/20">
+                                                        <div class="h-full bg-brand-medium shadow-[0_0_10px_rgba(166,177,225,0.8)]" 
+                                                             style="width: {{ min(100, ($course->students_count / max(1, $course->courseCapacity)) * 100) }}%">
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
 
-                                            {{-- Section 3: Action Buttons (Info + Add) --}}
+                                            {{-- Actions (Reverted) --}}
                                             <div class="w-full md:w-48 flex-shrink-0 mt-2 md:mt-0 flex gap-2">
-                                                
-                                                {{-- INFO BUTTON --}}
                                                 <button x-data x-on:click="$dispatch('open-modal', 'course-info-{{ $course->courseCode }}')" 
                                                         class="p-3 rounded-xl bg-brand-white/10 text-brand-light hover:bg-brand-white hover:text-brand-dark border border-brand-white/10 transition-all duration-300 shadow-lg group/info group-hover:bg-brand-dark group-hover:text-brand-white group-hover:border-brand-dark">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 transform group-hover/info:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                                         <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                                     </svg>
                                                 </button>
 
-                                                {{-- ADD BUTTON --}}
-                                                <button class="flex-1 py-3 rounded-xl bg-brand-medium text-brand-dark font-bold hover:bg-brand-dark hover:text-brand-white group-hover:bg-brand-dark group-hover:text-brand-white transition-all duration-300 shadow-lg flex items-center justify-center gap-2">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd" />
-                                                    </svg>
-                                                    Add
-                                                </button>
+                                                @if($isRegistered)
+                                                    <button disabled class="flex-1 py-3 rounded-xl bg-green-500/20 text-green-300 font-bold border border-green-500/30 cursor-not-allowed opacity-80 flex items-center justify-center gap-2">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                                                        </svg>
+                                                        Added
+                                                    </button>
+                                                @else
+                                                    <form action="{{ route('course.add') }}" method="POST" class="flex-1">
+                                                        @csrf
+                                                        <input type="hidden" name="course_code" value="{{ $course->courseCode }}">
+                                                        
+                                                        <button type="submit" 
+                                                                @if($isFuture)
+                                                                    @click.prevent="futureModalOpen = true"
+                                                                @elseif($isPast)
+                                                                    @click.prevent="confirmModalOpen = true; targetForm = $el.closest('form'); targetSem = '{{ $courseSem }}'"
+                                                                @endif
+                                                                class="w-full py-3 rounded-xl bg-brand-medium text-brand-dark font-bold hover:bg-brand-dark hover:text-brand-white group-hover:bg-brand-dark group-hover:text-brand-white transition-all duration-300 shadow-lg flex items-center justify-center gap-2">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd" />
+                                                            </svg>
+                                                            Add
+                                                        </button>
+                                                    </form>
+                                                @endif
                                             </div>
-
                                         </div>
                                     </div>
                                 @endforeach
                             </div>
-
-                            {{-- Pagination Links --}}
                             <div class="mt-8">
                                 {{ $courses->links('pagination.sms') }}
                             </div>                            
                         @endif
                     </div>
-                </div>
 
+                    {{-- 2. SELECTED COURSES CONTAINER (Reverted) --}}
+                    @if($registeredCourses->isNotEmpty())
+                    <div class="bg-brand-medium/20 backdrop-blur-xl rounded-3xl p-8 border border-brand-medium shadow-[0_0_30px_rgba(166,177,225,0.3)] mt-8 animate-fade-in-up delay-300">
+                        <div class="flex items-center gap-3 mb-6">
+                            <h2 class="text-2xl font-bold text-brand-white drop-shadow-sm">Selected Courses</h2>
+                            <span class="bg-brand-medium text-brand-dark font-extrabold px-3 py-1 rounded-full text-xs shadow-sm">
+                                {{ $registeredCourses->count() }} Items
+                            </span>
+                        </div>
+
+                        <div class="flex flex-col gap-3">
+                            @foreach($registeredCourses as $regCourse)
+                                <div class="bg-brand-white/10 border border-brand-white/20 rounded-xl p-4 flex flex-col md:flex-row items-center justify-between gap-4 hover:bg-brand-white/20 transition-colors">
+                                    <div class="flex items-center gap-4 w-full md:w-auto">
+                                        <div class="bg-brand-white text-brand-dark font-extrabold px-4 py-2 rounded-lg text-sm shadow-sm">
+                                            {{ $regCourse->courseCode }}
+                                        </div>
+                                        <div>
+                                            <h4 class="text-brand-white font-bold text-lg">{{ $regCourse->courseName }}</h4>
+                                            <p class="text-brand-light text-xs font-semibold">{{ $regCourse->courseCreds }} Credits</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <form action="{{ route('course.remove') }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <input type="hidden" name="course_code" value="{{ $regCourse->courseCode }}">
+                                        <button type="submit" class="px-4 py-2 bg-red-500/20 text-red-200 border border-red-500/30 rounded-lg text-sm font-bold hover:bg-red-500 hover:text-white transition-all shadow-sm">
+                                            Remove
+                                        </button>
+                                    </form>
+                                </div>
+                            @endforeach
+                            
+                            <div class="mt-6 pt-6 border-t border-brand-white/20 flex flex-col md:flex-row justify-between items-center gap-4">
+                                <p class="text-brand-light font-bold text-lg">
+                                    Total Credits: <span class="text-brand-white text-2xl ml-2 drop-shadow-sm">{{ $registeredCourses->sum('courseCreds') }}</span>
+                                </p>
+                                
+                                <form action="{{ route('course.confirm') }}" method="POST" class="w-full md:w-auto">
+                                    @csrf
+                                    <button type="submit" class="w-full md:w-auto px-8 py-3 bg-brand-white text-brand-dark font-extrabold rounded-xl shadow-[0_0_20px_rgba(255,255,255,0.3)] hover:scale-105 hover:bg-brand-light transition-all duration-300 flex items-center justify-center gap-2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                                        </svg>
+                                        Confirm Registration
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    @endif
+
+                </div>
             </div>
         </div>
+
+        {{-- ALERTS MODALS (ENLARGED FONTS) --}}
+        
+        {{-- FUTURE SEMESTER MODAL --}}
+        <div x-show="futureModalOpen" 
+             style="display: none;" 
+             class="fixed inset-0 z-50 overflow-y-auto" 
+             aria-labelledby="modal-title" role="dialog" aria-modal="true">
+            <div x-show="futureModalOpen" class="fixed inset-0 bg-brand-dark/90 backdrop-blur-md transition-opacity"></div>
+            <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+                <div x-show="futureModalOpen"
+                     @click.away="futureModalOpen = false"
+                     class="inline-block align-bottom bg-brand-dark rounded-2xl border border-brand-white/10 text-left overflow-hidden shadow-[0_0_50px_rgba(239,68,68,0.2)] transform transition-all sm:my-8 sm:align-middle sm:max-w-xl w-full">
+                    <div class="px-6 pt-8 pb-8 sm:p-10">
+                        <div class="sm:flex sm:items-start">
+                            <div class="mx-auto flex-shrink-0 flex items-center justify-center h-16 w-16 rounded-full bg-red-500/20 sm:mx-0 sm:h-16 sm:w-16 border border-red-500/30">
+                                <svg class="h-8 w-8 text-red-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                </svg>
+                            </div>
+                            <div class="mt-5 text-center sm:mt-0 sm:ml-8 sm:text-left">
+                                <h3 class="text-3xl leading-8 font-extrabold text-brand-white" id="modal-title">
+                                    Restricted Action
+                                </h3>
+                                <div class="mt-4">
+                                    {{-- Enlarged text-lg to text-xl --}}
+                                    <p class="text-lg text-brand-light/90 leading-relaxed">
+                                        You cannot register for this course because it belongs to a <strong class="text-brand-white text-xl">Future Semester</strong>. 
+                                        Please stick to your current or previous curriculum.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-brand-white/5 px-6 py-5 sm:px-10 sm:flex sm:flex-row-reverse border-t border-brand-white/10">
+                        <button type="button" 
+                                @click="futureModalOpen = false"
+                                class="w-full inline-flex justify-center rounded-xl border border-transparent shadow-sm px-8 py-3 bg-brand-white text-lg font-bold text-brand-dark hover:bg-brand-light focus:outline-none sm:ml-3 sm:w-auto transition-colors">
+                            Understood
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- CONFIRMATION MODAL --}}
+        <div x-show="confirmModalOpen" 
+             style="display: none;" 
+             class="fixed inset-0 z-50 overflow-y-auto" 
+             aria-labelledby="modal-title" role="dialog" aria-modal="true">
+            <div x-show="confirmModalOpen" class="fixed inset-0 bg-brand-dark/90 backdrop-blur-md transition-opacity"></div>
+            <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+                <div x-show="confirmModalOpen"
+                     @click.away="confirmModalOpen = false"
+                     class="inline-block align-bottom bg-brand-dark rounded-2xl border border-brand-white/10 text-left overflow-hidden shadow-[0_0_50px_rgba(166,177,225,0.2)] transform transition-all sm:my-8 sm:align-middle sm:max-w-xl w-full">
+                    <div class="px-6 pt-8 pb-8 sm:p-10">
+                        <div class="sm:flex sm:items-start">
+                            <div class="mx-auto flex-shrink-0 flex items-center justify-center h-16 w-16 rounded-full bg-brand-medium/20 sm:mx-0 sm:h-16 sm:w-16 border border-brand-medium/30">
+                                <svg class="h-8 w-8 text-brand-medium" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </div>
+                            <div class="mt-5 text-center sm:mt-0 sm:ml-8 sm:text-left">
+                                <h3 class="text-3xl leading-8 font-extrabold text-brand-white" id="modal-title">
+                                    Confirm Registration
+                                </h3>
+                                <div class="mt-4">
+                                    {{-- Enlarged text-lg to text-xl --}}
+                                    <p class="text-lg text-brand-light/90 leading-relaxed">
+                                        You are about to register for a course from a <strong class="text-brand-white text-xl">Previous Semester</strong> (Semester <span x-text="targetSem"></span>).
+                                        <br><br>
+                                        Are you sure you want to proceed?
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-brand-white/5 px-6 py-5 sm:px-10 sm:flex sm:flex-row-reverse border-t border-brand-white/10">
+                        <button type="button" 
+                                @click="targetForm.submit(); confirmModalOpen = false"
+                                class="w-full inline-flex justify-center rounded-xl border border-transparent shadow-sm px-8 py-3 bg-brand-medium text-lg font-bold text-brand-dark hover:bg-brand-white focus:outline-none sm:ml-3 sm:w-auto transition-colors">
+                            Yes, Continue
+                        </button>
+                        <button type="button" 
+                                @click="confirmModalOpen = false"
+                                class="mt-3 w-full inline-flex justify-center rounded-xl border border-brand-white/10 shadow-sm px-8 py-3 bg-transparent text-lg font-bold text-brand-light hover:text-brand-white hover:bg-brand-white/10 focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto transition-colors">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
-    {{-- MODALS CONTAINER --}}
+    {{-- Info Modals (Standard Size) --}}
     @if(!$courses->isEmpty())
         @foreach($courses as $course)
-            <x-modal name="course-info-{{ $course->courseCode }}" focusable>
-                {{-- SMS Style Modal Card --}}
-                <div class="bg-brand-dark/95 backdrop-blur-xl border border-brand-white/10 rounded-2xl shadow-2xl p-8 text-left relative overflow-hidden">
-                    
-                    {{-- Decorative Glow --}}
+             <x-modal name="course-info-{{ $course->courseCode }}" focusable>
+                 <div class="bg-brand-dark/95 backdrop-blur-xl border border-brand-white/10 rounded-2xl shadow-2xl p-8 text-left relative overflow-hidden">
                     <div class="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-brand-medium/20 rounded-full blur-3xl pointer-events-none"></div>
-
-                    {{-- Modal Header --}}
                     <div class="flex justify-between items-start mb-8 border-b border-brand-white/10 pb-6 relative z-10">
                         <div>
-                            <div class="flex items-center gap-3 mb-3">
-                                <span class="bg-brand-medium text-brand-dark text-sm font-extrabold px-3 py-1 rounded-lg shadow-lg">
-                                    {{ $course->courseCode }}
-                                </span>
-                                <span class="text-brand-light/80 text-sm font-bold uppercase tracking-widest">
-                                    {{ $course->progCode }}
-                                </span>
-                            </div>
-                            <h2 class="text-4xl font-extrabold text-brand-white leading-tight">
+                             <h2 class="text-4xl font-extrabold text-brand-white leading-tight">
                                 {{ $course->courseName }}
                             </h2>
                         </div>
                         <button x-on:click="$dispatch('close')" class="text-brand-light/50 hover:text-brand-white bg-brand-white/5 hover:bg-brand-white/10 p-2 rounded-full transition-all duration-300">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                             <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
                             </svg>
                         </button>
                     </div>
-
-                    {{-- Modal Body --}}
-                    <div class="space-y-8 relative z-10">
-                        
-                        {{-- Description --}}
-                        <div>
-                            <h3 class="text-sm font-bold text-brand-medium uppercase tracking-widest mb-3">Course Description</h3>
-                            {{-- Increased text size to text-lg and brightened background slightly --}}
-                            <p class="text-brand-white leading-relaxed text-lg bg-brand-white/10 p-5 rounded-xl border border-brand-white/5">
-                                {{ $course->courseDesc }}
-                            </p>
-                        </div>
-
-                        {{-- Details Grid --}}
-                        <div class="grid grid-cols-2 gap-5">
-                            
-                            {{-- INFO CARDS --}}
-                            
-                            {{-- Credits --}}
-                            <div class="bg-brand-white/15 p-5 rounded-xl border border-brand-white/10 hover:border-brand-white/20 transition-colors">
-                                <h4 class="text-xs font-bold text-brand-light/70 uppercase tracking-widest mb-2">Credits</h4>
-                                <p class="text-3xl font-extrabold text-brand-white">{{ $course->courseCreds }}</p>
-                            </div>
-
-                            {{-- Semester --}}
-                            <div class="bg-brand-white/15 p-5 rounded-xl border border-brand-white/10 hover:border-brand-white/20 transition-colors">
-                                <h4 class="text-xs font-bold text-brand-light/70 uppercase tracking-widest mb-2">Semester</h4>
-                                <p class="text-3xl font-extrabold text-brand-white">{{ $course->courseSem }}</p>
-                            </div>
-
-                            {{-- Location --}}
-                            <div class="bg-brand-white/15 p-5 rounded-xl border border-brand-white/10 hover:border-brand-white/20 transition-colors">
-                                <h4 class="text-xs font-bold text-brand-light/70 uppercase tracking-widest mb-2">Location</h4>
-                                <p class="text-lg font-bold text-brand-white break-words">{{ $course->courseLocBuilding }}</p>
-                                <p class="text-base text-brand-medium mt-1 font-semibold">{{ $course->courseLocRoom }}</p>
-                            </div>
-
-                            {{-- Schedule --}}
-                            <div class="bg-brand-white/15 p-5 rounded-xl border border-brand-white/10 hover:border-brand-white/20 transition-colors">
-                                <h4 class="text-xs font-bold text-brand-light/70 uppercase tracking-widest mb-2">Schedule</h4>
-                                <p class="text-lg font-bold text-brand-white">{{ $course->courseDate }}</p>
-                                <p class="text-base text-brand-medium mt-1 font-semibold">{{ $course->courseTime }}</p>
-                            </div>
-
-                            {{-- Prerequisite --}}
-                            <div class="col-span-2 bg-brand-white/15 p-5 rounded-xl border border-brand-white/10 hover:border-brand-white/20 transition-colors flex items-center justify-between">
-                                <h4 class="text-xs font-bold text-brand-light/70 uppercase tracking-widest">Prerequisite</h4>
-                                @if($course->coursePreReq)
-                                    <span class="text-red-300 font-bold text-lg bg-red-500/20 px-4 py-1.5 rounded-lg border border-red-500/30">
-                                        {{ $course->coursePreReq }}
-                                    </span>
-                                @else
-                                    <span class="text-green-300 font-bold text-lg bg-green-500/20 px-4 py-1.5 rounded-lg border border-green-500/30">
-                                        None
-                                    </span>
-                                @endif
-                            </div>
-
-                        </div>
-
-                        {{-- LECTURER INFORMATION --}}
-                        @if($course->lecturer)
-                            <div class="mt-8 border-t border-brand-white/10 pt-6">
-                                <h3 class="text-sm font-bold text-brand-medium uppercase tracking-widest mb-4">Lecturer Information</h3>
-                                
-                                <div class="bg-brand-white/10 p-6 rounded-2xl border border-brand-white/5 flex flex-col md:flex-row items-center md:items-start gap-6 hover:bg-brand-white/15 transition-colors">
-                                    {{-- Avatar Placeholder with Initials --}}
-                                    <div class="h-16 w-16 flex-shrink-0 rounded-full bg-gradient-to-br from-brand-medium to-brand-dark flex items-center justify-center shadow-lg border-2 border-brand-white/20">
-                                        <span class="text-xl font-bold text-brand-white">
-                                            {{ substr($course->lecturer->fName, 0, 1) }}{{ substr($course->lecturer->lName, 0, 1) }}
-                                        </span>
-                                    </div>
-                                    
-                                    <div class="text-center md:text-left space-y-1 w-full">
-                                        <h4 class="text-2xl font-bold text-brand-white">
-                                            {{ $course->lecturer->fName }} {{ $course->lecturer->lName }}
-                                        </h4>
-                                        <p class="text-brand-medium font-bold text-sm tracking-wide">{{ $course->lecturer->qualification }}</p>
-                                        
-                                        <div class="flex flex-wrap items-center justify-center md:justify-start gap-x-6 gap-y-2 pt-3 text-sm text-brand-light/90">
-                                            <div class="flex items-center gap-2">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-brand-medium" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                                                </svg>
-                                                <span>{{ $course->lecturer->email }}</span>
-                                            </div>
-                                            <div class="flex items-center gap-2">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-brand-medium" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                                                </svg>
-                                                <span>{{ $course->lecturer->officeBuilding }}-{{ $course->lecturer->officeFloor }}-{{ $course->lecturer->officeRoom }}</span>
-                                            </div>
-                                             <div class="flex items-center gap-2">
-                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-brand-medium" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z" />
-                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
-                                                </svg>
-                                                <span>{{ $course->lecturer->department }}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        @endif
-
-                    </div>
-                </div>
-            </x-modal>
+                     <div class="space-y-8 relative z-10">
+                        <p class="text-brand-white leading-relaxed text-lg bg-brand-white/10 p-5 rounded-xl border border-brand-white/5">
+                            {{ $course->courseDesc }}
+                        </p>
+                     </div>
+                 </div>
+             </x-modal>
         @endforeach
     @endif
 </x-app-layout>

@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('courseDesc');
             $table->integer('courseSem');
             $table->integer('courseCreds');
+            $table->integer('courseCapacity')->default(2);
             $table->string('courseLocBuilding');
             $table->string('courseLocRoom');
             $table->string('coursePreReq')->nullable();

@@ -6,19 +6,22 @@ use App\Models\Course;
 use App\Models\Programme;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class CourseRegistrationController extends Controller
 {
+    // ... (index function remains the same) ...
     public function index(Request $request)
     {
         $student = Auth::user();
 
-        // 1. Start with the Base Query: Courses in the student's faculty
-        $query = Course::whereHas('programme', function($q) use ($student) {
+        $registeredCourses = $student->courses;
+        $registeredCourseCodes = $registeredCourses->pluck('courseCode')->toArray();
+
+        $query = Course::withCount('students')->whereHas('programme', function($q) use ($student) {
             $q->where('facCode', $student->facCode);
         });
 
-        // 2. Apply Search Filter (Course Name or Code)
         if ($request->filled('search')) {
             $search = $request->input('search');
             $query->where(function($q) use ($search) {
@@ -27,24 +30,17 @@ class CourseRegistrationController extends Controller
             });
         }
 
-        // 3. Apply Programme Filter
         if ($request->filled('programme') && $request->input('programme') !== 'all') {
             $query->where('progCode', $request->input('programme'));
         }
 
-        // 4. Apply Semester Filter
         if ($request->filled('semester') && $request->input('semester') !== 'all') {
             $query->where('courseSem', $request->input('semester'));
         }
 
-        // 5. Execute Query
         $courses = $query->paginate(4)->appends($request->query());
 
-        // 6. Fetch Data for Filter Dropdowns
-        // Get all programmes in the student's faculty for the dropdown
         $programmes = Programme::where('facCode', $student->facCode)->get();
-
-        // Get available semesters dynamically based on courses in this faculty
         $semesters = Course::whereHas('programme', function($q) use ($student) {
                 $q->where('facCode', $student->facCode);
             })
@@ -52,21 +48,72 @@ class CourseRegistrationController extends Controller
             ->orderBy('courseSem')
             ->pluck('courseSem');
 
-        return view('course-registration.index', compact('courses', 'programmes', 'semesters'));
+        return view('course-registration.index', compact('courses', 'programmes', 'semesters', 'registeredCourses', 'registeredCourseCodes'));
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'course_code' => 'required|exists:course,courseCode',
+        ]);
+
+        $student = Auth::user();
+        
+        // Fetch the course to check its semester
+        $course = Course::where('courseCode', $request->course_code)->firstOrFail();
+
+        // RESTRICTION: Prevent adding courses from future semesters
+        if ($course->courseSem > $student->semester) {
+            return redirect()->back()->with('error', 'You cannot register for courses from future semesters.');
+        }
+        
+        // Check if already registered
+        if ($student->courses()->where('registration.courseCode', $request->course_code)->exists()) {
+            return redirect()->back()->with('error', 'Course already added.');
+        }
+
+        $student->courses()->attach($request->course_code, [
+            'status' => 'Pending',
+            'registrationDate' => Carbon::now()->toDateString(),
+            'registrationTime' => Carbon::now()->toTimeString(),
+        ]);
+
+        return redirect()->back()->with('success', 'Course added successfully.');
+    }
+
+    // ... (destroy, confirm, roadmap, submissions remain the same) ...
+    public function destroy(Request $request)
+    {
+        $request->validate([
+            'course_code' => 'required|exists:course,courseCode',
+        ]);
+
+        Auth::user()->courses()->detach($request->course_code);
+
+        return redirect()->back()->with('success', 'Course removed successfully.');
+    }
+
+    public function confirm()
+    {
+        $student = Auth::user();
+        
+        foreach ($student->courses as $course) {
+             $student->courses()->updateExistingPivot($course->courseCode, [
+                'status' => 'Submitted',
+                'registrationDate' => Carbon::now()->toDateString(),
+                'registrationTime' => Carbon::now()->toTimeString(),
+             ]);
+        }
+
+        return redirect()->route('course.submissions')->with('success', 'Registration submitted successfully!');
     }
 
     public function roadmap()
     {
         $student = Auth::user();
-        
-        // Fetch the student's specific program curriculum
         $curriculum = $student->programCourses->groupBy('courseSem');
-
-        // Calculate basic stats for the creative view
         $totalSemesters = $curriculum->count();
         $currentSemester = $student->semester;
-        
-        // Calculate progress percentage (capped at 100%)
         $progress = min(100, round((($currentSemester - 1) / max($totalSemesters, 1)) * 100));
 
         return view('course-registration.roadmap', compact('student', 'curriculum', 'progress', 'totalSemesters'));
@@ -75,17 +122,10 @@ class CourseRegistrationController extends Controller
     public function submissions()
     {
         $student = Auth::user();
-        
-        // Fetch registered courses with pivot data (status, dates)
-        // We use the 'courses' relationship from Student model which links to 'registration' table
         $registeredCourses = $student->courses()
                                      ->withPivot('status', 'registrationDate', 'registrationTime')
                                      ->get();
-
-        // Calculate stats
         $totalCredits = $registeredCourses->sum('courseCreds');
-        
-        // Since only 1 submission is allowed, we take the status/date from the first record
         $submissionStatus = $registeredCourses->first()->pivot->status ?? 'Pending';
         $submissionDate = $registeredCourses->first()->pivot->registrationDate ?? null;
 

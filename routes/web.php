@@ -21,6 +21,10 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
 
     Route::get('/course-registration', [CourseRegistrationController::class, 'index'])->name('course.registration');
+    Route::post('/course-registration/add', [CourseRegistrationController::class, 'store'])->name('course.add');
+    Route::delete('/course-registration/remove', [CourseRegistrationController::class, 'destroy'])->name('course.remove');
+    Route::post('/course-registration/confirm', [CourseRegistrationController::class, 'confirm'])->name('course.confirm');
+    
     Route::get('/course-registration/roadmap', [CourseRegistrationController::class, 'roadmap'])->name('course.roadmap');
     Route::get('/course-registration/submissions', [CourseRegistrationController::class, 'submissions'])->name('course.submissions');
 });
