@@ -15,12 +15,18 @@ class CourseRegistrationController extends Controller
     {
         $student = Auth::user();
 
+        // CHECK: Does the student have an active submission?
+        // If they have any course with 'approved' or 'waiting for approval', they are locked.
+        $hasActiveSubmission = $student->courses()
+            ->wherePivotIn('status', ['approved', 'waiting for approval'])
+            ->exists();
+
         $registeredCourses = $student->courses;
         $registeredCourseCodes = $registeredCourses->pluck('courseCode')->toArray();
 
-        // Count only 'Submitted' students for availability
+        // Count only 'approved' students for availability
         $query = Course::withCount(['students' => function ($q) {
-            $q->where('registration.status', 'Submitted');
+            $q->where('registration.status', 'approved');
         }])->whereHas('programme', function($q) use ($student) {
             $q->where('facCode', $student->facCode);
         });
@@ -51,51 +57,70 @@ class CourseRegistrationController extends Controller
             ->orderBy('courseSem')
             ->pluck('courseSem');
 
-        return view('course-registration.index', compact('courses', 'programmes', 'semesters', 'registeredCourses', 'registeredCourseCodes'));
+        return view('course-registration.index', compact(
+            'courses', 
+            'programmes', 
+            'semesters', 
+            'registeredCourses', 
+            'registeredCourseCodes',
+            'hasActiveSubmission'
+        ));
     }
 
     public function store(Request $request)
     {
+        $student = Auth::user();
+
+        // BLOCK: Prevent adding if submitted
+        if ($student->courses()->wherePivotIn('status', ['approved', 'waiting for approval'])->exists()) {
+            return redirect()->back()->with('error', 'Registration is closed. You have already submitted.');
+        }
+
         $request->validate([
             'course_code' => 'required|exists:course,courseCode',
         ]);
-
-        $student = Auth::user();
         
         $course = Course::where('courseCode', $request->course_code)->firstOrFail();
 
-        // --- NEW RESTRICTION: Programme Check ---
-        // Students can only register for courses belonging to their own programme code
+        // Check: Programme Restriction
         if ($course->progCode !== $student->progCode) {
             return redirect()->back()->with('error', 'You cannot register for courses outside your programme (' . $student->progCode . ').');
         }
 
-        // RESTRICTION: Semester limit (Max 1 semester ahead)
+        // Check: Semester Limit
         if ($course->courseSem > ($student->semester + 1)) {
             return redirect()->back()->with('error', 'You cannot register for courses that are more than one semester ahead.');
         }
         
-        // Check if already registered
+        // Check: Already Added
         if ($student->courses()->where('registration.courseCode', $request->course_code)->exists()) {
             return redirect()->back()->with('error', 'Course already added.');
         }
 
+        // Initial add to cart is 'Pending'
         $student->courses()->attach($request->course_code, [
             'status' => 'Pending',
             'registrationDate' => Carbon::now()->toDateString(),
             'registrationTime' => Carbon::now()->toTimeString(),
         ]);
 
-        return redirect()->back()->with('success', 'Course added successfully.');
+        return redirect()->back()->with('success', 'Course added to list.');
     }
 
     public function destroy(Request $request)
     {
+        $student = Auth::user();
+
+        // BLOCK: Prevent removing if submitted
+        if ($student->courses()->wherePivotIn('status', ['approved', 'waiting for approval'])->exists()) {
+            return redirect()->back()->with('error', 'Registration is closed. You cannot remove courses after submission.');
+        }
+
         $request->validate([
             'course_code' => 'required|exists:course,courseCode',
         ]);
 
-        Auth::user()->courses()->detach($request->course_code);
+        $student->courses()->detach($request->course_code);
 
         return redirect()->back()->with('success', 'Course removed successfully.');
     }
@@ -103,6 +128,11 @@ class CourseRegistrationController extends Controller
     public function confirm()
     {
         $student = Auth::user();
+
+        // BLOCK: Prevent re-confirming if submitted
+        if ($student->courses()->wherePivotIn('status', ['approved', 'waiting for approval'])->exists()) {
+            return redirect()->back()->with('error', 'Registration already submitted.');
+        }
         
         $pendingCourses = $student->courses()->wherePivot('status', 'Pending')->get();
 
@@ -110,36 +140,22 @@ class CourseRegistrationController extends Controller
             return redirect()->back()->with('error', 'No new courses to confirm.');
         }
 
-        // 1. CAPACITY CHECK
-        foreach ($pendingCourses as $course) {
-            $currentConfirmed = $course->students()
-                ->wherePivot('status', 'Submitted')
-                ->count();
-            
-            if ($currentConfirmed >= $course->courseCapacity) {
-                return redirect()->back()->with('error', "Registration Failed: {$course->courseCode} ({$course->courseName}) is now full.");
-            }
-        }
-
-        // 2. NEXT SEMESTER VALIDATION
+        // 1. CURRICULUM VALIDATION
         $nextSemester = $student->semester + 1;
         $requiredCourses = Course::where('progCode', $student->progCode)
                                  ->where('courseSem', $nextSemester)
                                  ->get();
 
         if ($requiredCourses->isNotEmpty()) {
-            
             $allStudentCourseCodes = $student->courses->pluck('courseCode')->toArray();
             $requiredCourseCodes = $requiredCourses->pluck('courseCode')->toArray();
             
-            // A. Check for missing required courses
             $missingCourses = array_diff($requiredCourseCodes, $allStudentCourseCodes);
 
             if (!empty($missingCourses)) {
                 return redirect()->back()->with('error', "You must register for all courses required for Semester {$nextSemester}. Missing: " . implode(', ', $missingCourses));
             }
 
-            // B. Check for sufficient credits
             $totalSelectedCredits = $student->courses()
                 ->whereIn('course.courseCode', $requiredCourseCodes)
                 ->sum('courseCreds');
@@ -151,16 +167,45 @@ class CourseRegistrationController extends Controller
             }
         }
 
-        // 3. FINALIZE
+        // 2. PROCESS REGISTRATION
+        $approvedCourses = [];
+        $waitingCourses = [];
+
         foreach ($pendingCourses as $course) {
+            // Count currently 'approved' students
+            $currentConfirmed = $course->students()
+                ->wherePivot('status', 'approved')
+                ->count();
+            
+            if ($currentConfirmed < $course->courseCapacity) {
+                // Auto-approve
+                $status = 'approved';
+                $approvedCourses[] = $course->courseCode;
+            } else {
+                // Full -> Waiting for Approval
+                $status = 'waiting for approval';
+                $waitingCourses[] = $course->courseCode;
+            }
+
              $student->courses()->updateExistingPivot($course->courseCode, [
-                'status' => 'Submitted',
+                'status' => $status,
                 'registrationDate' => Carbon::now()->toDateString(),
                 'registrationTime' => Carbon::now()->toTimeString(),
              ]);
         }
 
-        return redirect()->route('course.submissions')->with('success', 'Registration submitted successfully!');
+        // 3. GENERATE FEEDBACK
+        $message = "Registration processed.";
+        
+        if (!empty($approvedCourses)) {
+            $message .= " Approved: " . implode(', ', $approvedCourses) . ".";
+        }
+        
+        if (!empty($waitingCourses)) {
+            $message .= " Waiting for approval (Full): " . implode(', ', $waitingCourses) . ".";
+        }
+
+        return redirect()->route('course.submissions')->with('success', $message);
     }
 
     public function roadmap()
@@ -194,48 +239,25 @@ class CourseRegistrationController extends Controller
     {
         $student = Auth::user();
 
-        // Check if there are any submitted courses to cancel
-        $hasSubmitted = $student->courses()->wherePivot('status', 'Submitted')->exists();
+        // Check for active courses to cancel
+        $hasActive = $student->courses()
+                             ->wherePivotIn('status', ['approved', 'waiting for approval'])
+                             ->exists();
 
-        if (!$hasSubmitted) {
+        if (!$hasActive) {
             return redirect()->back()->with('error', 'No active submission found to cancel.');
         }
 
-        // Bulk update ALL 'Submitted' courses for this student
+        // Bulk update to 'cancelled'
         DB::table('registration')
             ->where('matricNum', $student->matricNum)
-            ->where('status', 'Submitted')
+            ->whereIn('status', ['approved', 'waiting for approval'])
             ->update([
-                'status' => 'Cancellation Pending',
+                'status' => 'cancelled',
                 'registrationDate' => Carbon::now()->toDateString(),
                 'registrationTime' => Carbon::now()->toTimeString(),
             ]);
 
-        return redirect()->back()->with('success', 'Cancellation request for the entire submission has been sent for approval.');
-    }
-
-    // 2. MODIFY WHOLE SUBMISSION (Request to Edit/Unlock)
-    public function modify(Request $request)
-    {
-        $student = Auth::user();
-
-        $hasSubmitted = $student->courses()->wherePivot('status', 'Submitted')->exists();
-
-        if (!$hasSubmitted) {
-            return redirect()->back()->with('error', 'No submitted registration found to modify.');
-        }
-
-        // Bulk update ALL 'Submitted' courses to 'Modification Pending'
-        // This signals the Admin that the student wants to change their courses.
-        DB::table('registration')
-            ->where('matricNum', $student->matricNum)
-            ->where('status', 'Submitted')
-            ->update([
-                'status' => 'Modification Pending',
-                'registrationDate' => Carbon::now()->toDateString(),
-                'registrationTime' => Carbon::now()->toTimeString(),
-            ]);
-
-        return redirect()->back()->with('success', 'Modification request sent. Please wait for approval to edit your courses.');
+        return redirect()->back()->with('success', 'Submission cancelled successfully.');
     }
 }
