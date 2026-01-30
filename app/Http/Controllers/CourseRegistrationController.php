@@ -54,4 +54,41 @@ class CourseRegistrationController extends Controller
 
         return view('course-registration.index', compact('courses', 'programmes', 'semesters'));
     }
+
+    public function roadmap()
+    {
+        $student = Auth::user();
+        
+        // Fetch the student's specific program curriculum
+        $curriculum = $student->programCourses->groupBy('courseSem');
+
+        // Calculate basic stats for the creative view
+        $totalSemesters = $curriculum->count();
+        $currentSemester = $student->semester;
+        
+        // Calculate progress percentage (capped at 100%)
+        $progress = min(100, round((($currentSemester - 1) / max($totalSemesters, 1)) * 100));
+
+        return view('course-registration.roadmap', compact('student', 'curriculum', 'progress', 'totalSemesters'));
+    }
+
+    public function submissions()
+    {
+        $student = Auth::user();
+        
+        // Fetch registered courses with pivot data (status, dates)
+        // We use the 'courses' relationship from Student model which links to 'registration' table
+        $registeredCourses = $student->courses()
+                                     ->withPivot('status', 'registrationDate', 'registrationTime')
+                                     ->get();
+
+        // Calculate stats
+        $totalCredits = $registeredCourses->sum('courseCreds');
+        
+        // Since only 1 submission is allowed, we take the status/date from the first record
+        $submissionStatus = $registeredCourses->first()->pivot->status ?? 'Pending';
+        $submissionDate = $registeredCourses->first()->pivot->registrationDate ?? null;
+
+        return view('course-registration.submissions', compact('student', 'registeredCourses', 'totalCredits', 'submissionStatus', 'submissionDate'));
+    }
 }

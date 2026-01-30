@@ -26,7 +26,7 @@
                             <span>Register</span>
                         </a>
 
-                        <a href="#" 
+                        <a href="{{ route('course.roadmap') }}" 
                            class="flex items-center gap-4 px-5 py-4 rounded-2xl bg-brand-white/10 border border-brand-white/10 text-brand-white hover:bg-brand-white/20 hover:scale-105 transition-all duration-300 group shadow-sm">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-brand-light group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
@@ -34,7 +34,7 @@
                             <span class="font-medium">View Courses</span>
                         </a>
 
-                        <a href="#" 
+                        <a href="{{ route('course.submissions') }}" 
                            class="flex items-center gap-4 px-5 py-4 rounded-2xl bg-brand-white/10 border border-brand-white/10 text-brand-white hover:bg-brand-white/20 hover:scale-105 transition-all duration-300 group shadow-sm">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-brand-light group-hover:text-white transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
@@ -179,7 +179,7 @@
                                             {{-- Section 3: Action Buttons (Info + Add) --}}
                                             <div class="w-full md:w-48 flex-shrink-0 mt-2 md:mt-0 flex gap-2">
                                                 
-                                                {{-- INFO BUTTON: UPDATED with group-hover classes --}}
+                                                {{-- INFO BUTTON --}}
                                                 <button x-data x-on:click="$dispatch('open-modal', 'course-info-{{ $course->courseCode }}')" 
                                                         class="p-3 rounded-xl bg-brand-white/10 text-brand-light hover:bg-brand-white hover:text-brand-dark border border-brand-white/10 transition-all duration-300 shadow-lg group/info group-hover:bg-brand-dark group-hover:text-brand-white group-hover:border-brand-dark">
                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 transform group-hover/info:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -227,7 +227,6 @@
                     <div class="flex justify-between items-start mb-8 border-b border-brand-white/10 pb-6 relative z-10">
                         <div>
                             <div class="flex items-center gap-3 mb-3">
-                                {{-- Increased font size for badges --}}
                                 <span class="bg-brand-medium text-brand-dark text-sm font-extrabold px-3 py-1 rounded-lg shadow-lg">
                                     {{ $course->courseCode }}
                                 </span>
@@ -235,7 +234,6 @@
                                     {{ $course->progCode }}
                                 </span>
                             </div>
-                            {{-- Title enlarged to text-4xl --}}
                             <h2 class="text-4xl font-extrabold text-brand-white leading-tight">
                                 {{ $course->courseName }}
                             </h2>
@@ -262,7 +260,7 @@
                         {{-- Details Grid --}}
                         <div class="grid grid-cols-2 gap-5">
                             
-                            {{-- INFO CARDS: Background changed to bg-brand-white/15 (Lighter) --}}
+                            {{-- INFO CARDS --}}
                             
                             {{-- Credits --}}
                             <div class="bg-brand-white/15 p-5 rounded-xl border border-brand-white/10 hover:border-brand-white/20 transition-colors">
@@ -290,7 +288,7 @@
                                 <p class="text-base text-brand-medium mt-1 font-semibold">{{ $course->courseTime }}</p>
                             </div>
 
-                            {{-- Prerequisite (Full Width) --}}
+                            {{-- Prerequisite --}}
                             <div class="col-span-2 bg-brand-white/15 p-5 rounded-xl border border-brand-white/10 hover:border-brand-white/20 transition-colors flex items-center justify-between">
                                 <h4 class="text-xs font-bold text-brand-light/70 uppercase tracking-widest">Prerequisite</h4>
                                 @if($course->coursePreReq)
@@ -306,7 +304,7 @@
 
                         </div>
 
-                        {{-- LECTURER INFORMATION (NEW SECTION) --}}
+                        {{-- LECTURER INFORMATION --}}
                         @if($course->lecturer)
                             <div class="mt-8 border-t border-brand-white/10 pt-6">
                                 <h3 class="text-sm font-bold text-brand-medium uppercase tracking-widest mb-4">Lecturer Information</h3>
