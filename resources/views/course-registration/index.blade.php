@@ -179,9 +179,9 @@
                                             {{-- Section 3: Action Buttons (Info + Add) --}}
                                             <div class="w-full md:w-48 flex-shrink-0 mt-2 md:mt-0 flex gap-2">
                                                 
-                                                {{-- INFO BUTTON --}}
+                                                {{-- INFO BUTTON: UPDATED with group-hover classes --}}
                                                 <button x-data x-on:click="$dispatch('open-modal', 'course-info-{{ $course->courseCode }}')" 
-                                                        class="p-3 rounded-xl bg-brand-white/10 text-brand-light hover:bg-brand-white hover:text-brand-dark border border-brand-white/10 transition-all duration-300 shadow-lg group/info">
+                                                        class="p-3 rounded-xl bg-brand-white/10 text-brand-light hover:bg-brand-white hover:text-brand-dark border border-brand-white/10 transition-all duration-300 shadow-lg group/info group-hover:bg-brand-dark group-hover:text-brand-white group-hover:border-brand-dark">
                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 transform group-hover/info:scale-110 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                                         <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                                                     </svg>
@@ -305,6 +305,51 @@
                             </div>
 
                         </div>
+
+                        {{-- LECTURER INFORMATION (NEW SECTION) --}}
+                        @if($course->lecturer)
+                            <div class="mt-8 border-t border-brand-white/10 pt-6">
+                                <h3 class="text-sm font-bold text-brand-medium uppercase tracking-widest mb-4">Lecturer Information</h3>
+                                
+                                <div class="bg-brand-white/10 p-6 rounded-2xl border border-brand-white/5 flex flex-col md:flex-row items-center md:items-start gap-6 hover:bg-brand-white/15 transition-colors">
+                                    {{-- Avatar Placeholder with Initials --}}
+                                    <div class="h-16 w-16 flex-shrink-0 rounded-full bg-gradient-to-br from-brand-medium to-brand-dark flex items-center justify-center shadow-lg border-2 border-brand-white/20">
+                                        <span class="text-xl font-bold text-brand-white">
+                                            {{ substr($course->lecturer->fName, 0, 1) }}{{ substr($course->lecturer->lName, 0, 1) }}
+                                        </span>
+                                    </div>
+                                    
+                                    <div class="text-center md:text-left space-y-1 w-full">
+                                        <h4 class="text-2xl font-bold text-brand-white">
+                                            {{ $course->lecturer->fName }} {{ $course->lecturer->lName }}
+                                        </h4>
+                                        <p class="text-brand-medium font-bold text-sm tracking-wide">{{ $course->lecturer->qualification }}</p>
+                                        
+                                        <div class="flex flex-wrap items-center justify-center md:justify-start gap-x-6 gap-y-2 pt-3 text-sm text-brand-light/90">
+                                            <div class="flex items-center gap-2">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-brand-medium" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                                </svg>
+                                                <span>{{ $course->lecturer->email }}</span>
+                                            </div>
+                                            <div class="flex items-center gap-2">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-brand-medium" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                                                </svg>
+                                                <span>{{ $course->lecturer->officeBuilding }}-{{ $course->lecturer->officeFloor }}-{{ $course->lecturer->officeRoom }}</span>
+                                            </div>
+                                             <div class="flex items-center gap-2">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-brand-medium" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z" />
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
+                                                </svg>
+                                                <span>{{ $course->lecturer->department }}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
 
                     </div>
                 </div>
