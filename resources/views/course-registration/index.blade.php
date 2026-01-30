@@ -8,7 +8,7 @@
     }">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             
-            {{-- Page Header (Reverted to standard size) --}}
+            {{-- Page Header --}}
             <div class="mb-8 animate-fade-in-up">
                 <h1 class="text-4xl font-extrabold text-brand-white tracking-tight drop-shadow-md">
                     Course Registration
@@ -65,7 +65,7 @@
                     {{-- 1. AVAILABLE COURSES SECTION --}}
                     <div class="bg-brand-white/10 backdrop-blur-lg rounded-3xl p-8 border border-brand-white/20">
                         
-                        {{-- Header (Reverted) --}}
+                        {{-- Header --}}
                         <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
                             <h2 class="text-2xl font-bold text-brand-white">Available Courses</h2>
                             <div class="flex items-center gap-3 bg-brand-white/5 border border-brand-white/10 px-4 py-2 rounded-xl backdrop-blur-sm shadow-sm">
@@ -87,7 +87,7 @@
                             </div>
                         </div>
 
-                        {{-- Search Form (Reverted) --}}
+                        {{-- Search Form --}}
                         <form method="GET" action="{{ route('course.registration') }}" class="mb-8">
                             <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
                                 <div class="md:col-span-6 relative group">
@@ -125,7 +125,7 @@
                             </div>
                         </form>
 
-                        {{-- Course List (Reverted) --}}
+                        {{-- Course List --}}
                         @if($courses->isEmpty())
                             <div class="text-center py-16 flex flex-col items-center justify-center">
                                 <p class="text-brand-light text-lg font-medium">No courses found matching your criteria.</p>
@@ -136,15 +136,23 @@
                                     @php
                                         $studentSem = Auth::user()->semester;
                                         $courseSem = $course->courseSem;
-                                        $isFuture = $courseSem > $studentSem;
-                                        $isPast = $courseSem < $studentSem;
+                                        
+                                        // LOGIC UPDATE:
+                                        // 1. Restricted Future: More than 1 semester ahead (e.g. Student Sem 1, Course Sem 3+)
+                                        $isRestrictedFuture = $courseSem > ($studentSem + 1);
+                                        
+                                        // 2. Current or Previous: Needs warning
+                                        $isCurrentOrPast = $courseSem <= $studentSem;
+                                        
+                                        // 3. Next Semester ($courseSem == $studentSem + 1): Allowed freely (no flag needed)
+                                        
                                         $isRegistered = in_array($course->courseCode, $registeredCourseCodes);
                                     @endphp
 
                                     <div class="group relative bg-brand-white/20 backdrop-blur-md border border-brand-white/20 rounded-2xl p-6 hover:bg-brand-light hover:border-brand-light transition-all duration-300 shadow-xl">
                                         <div class="flex flex-col md:flex-row items-center gap-6">
                                             
-                                            {{-- Code & Credits (Reverted) --}}
+                                            {{-- Code & Credits --}}
                                             <div class="flex flex-row md:flex-col items-center md:items-start justify-center gap-3 md:gap-2 w-full md:w-32 flex-shrink-0">
                                                 <div class="bg-brand-medium text-brand-dark font-extrabold px-3 py-1 rounded-lg text-sm text-center w-full md:w-auto shadow-md transition-all duration-300 group-hover:bg-brand-dark group-hover:text-brand-medium">
                                                     {{ $course->courseCode }}
@@ -154,7 +162,7 @@
                                                 </span>
                                             </div>
 
-                                            {{-- Course Info & AVAILABILITY (Reverted) --}}
+                                            {{-- Course Info & AVAILABILITY --}}
                                             <div class="flex-1 text-center md:text-left w-full border-t md:border-t-0 md:border-l border-brand-white/10 pt-4 md:pt-0 md:pl-6">
                                                 <h3 class="text-xl md:text-2xl font-bold text-brand-white mb-2 leading-tight group-hover:text-brand-dark transition-colors">
                                                     {{ $course->courseName }}
@@ -168,7 +176,7 @@
                                                     </div>
                                                 </div>
                                                 
-                                                {{-- Availability Section (Reverted to text-lg but keep high contrast) --}}
+                                                {{-- Availability Section --}}
                                                 <div class="mt-4 w-full max-w-xs">
                                                     <div class="flex justify-between items-end mb-2">
                                                         <span class="text-xs font-bold uppercase tracking-widest text-brand-white/70 group-hover:text-brand-dark/70">
@@ -186,7 +194,7 @@
                                                 </div>
                                             </div>
 
-                                            {{-- Actions (Reverted) --}}
+                                            {{-- Actions --}}
                                             <div class="w-full md:w-48 flex-shrink-0 mt-2 md:mt-0 flex gap-2">
                                                 <button x-data x-on:click="$dispatch('open-modal', 'course-info-{{ $course->courseCode }}')" 
                                                         class="p-3 rounded-xl bg-brand-white/10 text-brand-light hover:bg-brand-white hover:text-brand-dark border border-brand-white/10 transition-all duration-300 shadow-lg group/info group-hover:bg-brand-dark group-hover:text-brand-white group-hover:border-brand-dark">
@@ -208,9 +216,9 @@
                                                         <input type="hidden" name="course_code" value="{{ $course->courseCode }}">
                                                         
                                                         <button type="submit" 
-                                                                @if($isFuture)
+                                                                @if($isRestrictedFuture)
                                                                     @click.prevent="futureModalOpen = true"
-                                                                @elseif($isPast)
+                                                                @elseif($isCurrentOrPast)
                                                                     @click.prevent="confirmModalOpen = true; targetForm = $el.closest('form'); targetSem = '{{ $courseSem }}'"
                                                                 @endif
                                                                 class="w-full py-3 rounded-xl bg-brand-medium text-brand-dark font-bold hover:bg-brand-dark hover:text-brand-white group-hover:bg-brand-dark group-hover:text-brand-white transition-all duration-300 shadow-lg flex items-center justify-center gap-2">
@@ -232,7 +240,7 @@
                         @endif
                     </div>
 
-                    {{-- 2. SELECTED COURSES CONTAINER (Reverted) --}}
+                    {{-- 2. SELECTED COURSES CONTAINER --}}
                     @if($registeredCourses->isNotEmpty())
                     <div class="bg-brand-medium/20 backdrop-blur-xl rounded-3xl p-8 border border-brand-medium shadow-[0_0_30px_rgba(166,177,225,0.3)] mt-8 animate-fade-in-up delay-300">
                         <div class="flex items-center gap-3 mb-6">
@@ -289,7 +297,7 @@
             </div>
         </div>
 
-        {{-- ALERTS MODALS (ENLARGED FONTS) --}}
+        {{-- ALERTS MODALS --}}
         
         {{-- FUTURE SEMESTER MODAL --}}
         <div x-show="futureModalOpen" 
@@ -314,10 +322,10 @@
                                     Restricted Action
                                 </h3>
                                 <div class="mt-4">
-                                    {{-- Enlarged text-lg to text-xl --}}
                                     <p class="text-lg text-brand-light/90 leading-relaxed">
-                                        You cannot register for this course because it belongs to a <strong class="text-brand-white text-xl">Future Semester</strong>. 
-                                        Please stick to your current or previous curriculum.
+                                        You cannot register for this course because it is <strong class="text-brand-white text-xl">too far in the future</strong>. 
+                                        <br>
+                                        You may only register for courses up to <strong>one semester ahead</strong> of your current level.
                                     </p>
                                 </div>
                             </div>
@@ -357,9 +365,8 @@
                                     Confirm Registration
                                 </h3>
                                 <div class="mt-4">
-                                    {{-- Enlarged text-lg to text-xl --}}
                                     <p class="text-lg text-brand-light/90 leading-relaxed">
-                                        You are about to register for a course from a <strong class="text-brand-white text-xl">Previous Semester</strong> (Semester <span x-text="targetSem"></span>).
+                                        You are about to register for a course from the <strong class="text-brand-white text-xl">Current or Previous Semester</strong> (Semester <span x-text="targetSem"></span>).
                                         <br><br>
                                         Are you sure you want to proceed?
                                     </p>
@@ -385,7 +392,7 @@
 
     </div>
 
-    {{-- Info Modals (Standard Size) --}}
+    {{-- Info Modals --}}
     @if(!$courses->isEmpty())
         @foreach($courses as $course)
              <x-modal name="course-info-{{ $course->courseCode }}" focusable>

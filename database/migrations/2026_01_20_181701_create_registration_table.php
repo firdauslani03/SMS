@@ -23,6 +23,9 @@ return new class extends Migration
             $table->string('status');
             $table->date('registrationDate');
             $table->time('registrationTime');
+
+            $table->string('modifyCourseCode')->nullable();
+            $table->foreign('modifyCourseCode')->references('courseCode')->on('course');
         });
     }
 

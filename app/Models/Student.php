@@ -32,7 +32,8 @@ class Student extends Authenticatable
 
     public function courses()
     {
-        return $this->belongsToMany(Course::class, 'registration', 'matricNum', 'courseCode');
+        return $this->belongsToMany(Course::class, 'registration', 'matricNum', 'courseCode')
+                ->withPivot('status', 'registrationDate', 'registrationTime', 'modifyCourseCode');
     }
 
     public function programCourses()
