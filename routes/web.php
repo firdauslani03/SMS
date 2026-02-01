@@ -3,8 +3,11 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CourseRegistrationController;
 use App\Http\Controllers\LecturerController;
+use App\Http\Controllers\Admin\CourseController;
+use App\Models\Course;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\DB;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -47,6 +50,42 @@ Route::middleware(['auth:lecturer', 'no_cache'])->group(function () {
 
     Route::get('/lecturer/profile', [ProfileController::class, 'editLecturer'])->name('lecturer.profile.edit');
     Route::patch('/lecturer/profile', [ProfileController::class, 'updateLecturer'])->name('lecturer.profile.update');
+});
+
+// IT STAFF (ADMIN) ROUTES
+Route::middleware(['auth:it_staff', 'no_cache'])->group(function () {
+    Route::get('/admin/dashboard', function () {
+    // 1. Fetch Statistics
+    $totalCourses = Course::count();
+    $pendingRegistrations = DB::table('registration')->where('status', 'Pending')->count();
+    $approvedRegistrations = DB::table('registration')->where('status', 'Approved')->count();
+
+    // 2. Fetch Recent Registrations (joining with Student and Course tables for names)
+    $recentRegistrations = DB::table('registration')
+        ->join('student', 'registration.matricNum', '=', 'student.matricNum')
+        ->join('course', 'registration.courseCode', '=', 'course.courseCode')
+        ->select(
+            'registration.*', 
+            'student.fName', 
+            'student.lName', 
+            'course.courseName', 
+            'course.courseCode'
+        )
+        ->orderBy('registration.registrationDate', 'desc')
+        ->orderBy('registration.registrationTime', 'desc')
+        ->limit(10)
+        ->get();
+
+    return view('admin.dashboard', compact(
+        'totalCourses', 
+        'pendingRegistrations', 
+        'approvedRegistrations', 
+        'recentRegistrations'
+    ));
+    })->name('admin.dashboard');
+
+    Route::resource('admin/courses', CourseController::class)->names('admin.courses');
+
 });
 
 require __DIR__.'/auth.php';

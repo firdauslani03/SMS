@@ -21,7 +21,7 @@ class ITStaffSeeder extends Seeder
                 'fName' => 'Wriothesley',
                 'lName' => 'Duke',
                 'ic' => '951123015001',
-                'email' => 'admin1@staff.utm.my',
+                'email' => 'wrio.admin@staff.utm.my',
                 'pass' => $password,
                 'countryCode' => '60',
                 'phoneOp' => '11',

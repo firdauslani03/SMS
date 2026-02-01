@@ -45,7 +45,9 @@ class LoginRequest extends FormRequest
         $password = $this->input('password');
         
         // Determine Guard based on Domain
-        if (str_contains($email, '@staff.utm.my')) {
+        if (str_contains($email, 'admin@staff.utm.my')) {
+            $guard = 'it_staff';
+        } elseif (str_contains($email, '@staff.utm.my')) {
             $guard = 'lecturer';
         } else {
             $guard = 'web';

@@ -45,6 +45,11 @@ return [
             'driver' => 'session',
             'provider' => 'lecturers',
         ],
+
+        'it_staff' => [
+            'driver' => 'session',
+            'provider' => 'it_staffs',
+        ],
     ],
 
     /*
@@ -74,6 +79,11 @@ return [
         'lecturers' => [
             'driver' => 'eloquent',
             'model' => App\Models\Lecturer::class,
+        ],
+
+        'it_staffs' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\ITStaff::class,
         ],
     ],    
 

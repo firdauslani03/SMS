@@ -79,18 +79,6 @@ class StudentSeeder extends Seeder
                         'facCode' => $facCode,
                         'progCode' => $progCode,
                     ]);
-
-                    // Enroll Student in ALL courses for their current semester
-                    foreach ($courses as $courseCode) {
-                        DB::table('registration')->insertOrIgnore([
-                            'courseCode' => $courseCode,
-                            'matricNum' => $matricNum,
-                            'status' => 'Active',
-                            'registrationDate' => now()->toDateString(),
-                            'registrationTime' => now()->toTimeString(),
-                            'modifyCourseCode' => null,
-                        ]);
-                    }
                 }
             }
         }
