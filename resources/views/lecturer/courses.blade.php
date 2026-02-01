@@ -1,6 +1,5 @@
 <x-lecturer-layout title="My Courses">
     {{-- Initialize Alpine Data --}}
-    {{-- Added 'activeTab' to track the current view --}}
     <div x-data="{ showModal: false, selectedCourse: null, activeTab: 'details' }">
         
         {{-- ANIMATION WRAPPER --}}
@@ -15,11 +14,7 @@
                         You are currently teaching <span class="text-brand-medium font-bold">{{ $courses->count() }}</span> courses.
                     </p>
                 </div>
-                
-                <button class="px-8 py-4 rounded-xl bg-brand-medium text-brand-dark font-bold hover:bg-brand-white hover:scale-105 transition-all duration-300 shadow-lg flex items-center gap-2 w-fit text-lg">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                    <span>Add Course</span>
-                </button>
+            
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-8">
@@ -47,8 +42,8 @@
                             </h3>
                             
                             <div class="flex items-center gap-2 text-lg font-bold mb-8 transition-colors duration-300
-                                        text-brand-light/80
-                                        group-hover:text-brand-dark/70">
+                                            text-brand-light/80
+                                            group-hover:text-brand-dark/70">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                                 {{ $course->courseCreds }} Credits
                             </div>
@@ -83,6 +78,7 @@
             </div>
         </div>
 
+        {{-- MODAL --}}
         <div x-show="showModal" 
              style="display: none;"
              class="fixed inset-0 z-[100] overflow-y-auto" 
@@ -106,10 +102,12 @@
                      x-transition:leave="ease-in duration-200"
                      x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100"
                      x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                     class="relative transform rounded-[2rem] bg-[#2a2e4b] border border-brand-white/10 text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-5xl overflow-hidden flex flex-col max-h-[90vh]">
+                     class="relative transform rounded-[2rem] bg-[#2a2e4b] border border-brand-white/10 text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-5xl overflow-hidden flex flex-col h-[85vh] max-h-[90vh]">
                     
+                    {{-- Modal Header & Body --}}
                     <div class="p-8 md:p-10 overflow-y-auto flex-1 custom-scrollbar" x-if="selectedCourse">
                         
+                        {{-- Header Section --}}
                         <div class="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-6 pb-6 border-b border-brand-white/10">
                             <div class="flex flex-col md:flex-row items-start gap-5 w-full">
                                 {{-- Code Tag --}}
@@ -132,6 +130,7 @@
                             </button>
                         </div>
 
+                        {{-- Toggle --}}
                         <div class="flex justify-center mb-8">
                             <div class="bg-black/20 p-1.5 rounded-full flex gap-1 shadow-inner border border-brand-white/5">
                                 <button @click="activeTab = 'details'" 
@@ -148,6 +147,7 @@
                             </div>
                         </div>
 
+                        {{-- DETAILS TAB --}}
                         <div x-show="activeTab === 'details'" 
                              x-transition:enter="transition ease-out duration-300"
                              x-transition:enter-start="opacity-0 translate-y-2"
@@ -197,6 +197,7 @@
                             </div>
                         </div>
 
+                        {{-- STUDENTS TAB --}}
                         <div x-show="activeTab === 'students'" 
                              x-transition:enter="transition ease-out duration-300"
                              x-transition:enter-start="opacity-0 translate-y-2"
@@ -204,18 +205,27 @@
                              class="space-y-4">
                             
                              <template x-if="selectedCourse.students && selectedCourse.students.length > 0">
-                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                 <div class="flex flex-col space-y-4">
                                      <template x-for="student in selectedCourse.students" :key="student.matricNum">
-                                         <div class="bg-[#4b4f74] p-4 rounded-2xl border border-brand-white/10 hover:border-brand-medium/50 transition-colors flex items-center gap-4 group shadow-md">
-                                             <div class="h-12 w-12 rounded-full bg-brand-medium text-brand-dark flex items-center justify-center font-bold text-lg shadow-inner shrink-0">
-                                                 <span x-text="student.fName ? student.fName.charAt(0) : 'S'"></span>
-                                             </div>
-                                             <div class="overflow-hidden">
-                                                 <p class="text-brand-white font-bold truncate group-hover:text-brand-medium transition-colors" x-text="student.fName"></p>
-                                                 <div class="flex items-center gap-2 text-brand-light/70 text-xs font-bold mt-0.5">
-                                                     <span class="uppercase tracking-wider" x-text="student.matricNum"></span>
+                                         <div class="bg-[#4b4f74] p-6 rounded-2xl border border-brand-white/10 hover:border-brand-medium/50 transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-4 group shadow-md">
+                                             
+                                             <div class="flex items-center gap-6">
+                                                 <div class="h-16 w-16 rounded-full bg-brand-medium text-brand-dark flex items-center justify-center font-bold text-2xl shadow-inner shrink-0">
+                                                     <span x-text="student.fName ? student.fName.charAt(0) : 'S'"></span>
                                                  </div>
-                                                 <p class="text-xs text-brand-light/50 truncate" x-text="student.email"></p>
+                                                 
+                                                 <div class="overflow-hidden">
+                                                     <p class="text-brand-white font-bold text-2xl truncate group-hover:text-brand-medium transition-colors" x-text="student.fName + (student.lName ? ' ' + student.lName : '')"></p>
+                                                     <div class="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 text-brand-light/70 text-base font-bold mt-1">
+                                                         <span class="uppercase tracking-wider" x-text="student.matricNum"></span>
+                                                         <span class="hidden sm:inline text-brand-white/20">|</span>
+                                                         <span class="text-brand-light/50 font-normal lowercase" x-text="student.email"></span>
+                                                     </div>
+                                                 </div>
+                                             </div>
+
+                                             <div class="hidden sm:block text-right">
+                                                 <span class="text-brand-white/20 font-bold text-lg" x-text="student.progCode"></span>
                                              </div>
                                          </div>
                                      </template>
@@ -225,7 +235,7 @@
                              <template x-if="!selectedCourse.students || selectedCourse.students.length === 0">
                                  <div class="text-center py-12 rounded-3xl bg-black/10 border border-brand-white/5 border-dashed">
                                      <div class="h-16 w-16 mx-auto rounded-full bg-brand-white/5 flex items-center justify-center mb-3 text-brand-light/30">
-                                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                                         <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
                                      </div>
                                      <p class="text-brand-light/50 font-bold">No students registered yet.</p>
                                  </div>

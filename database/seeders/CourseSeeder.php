@@ -21,6 +21,7 @@ class CourseSeeder extends Seeder
                 'courseDesc' => 'Introduction to programming concepts and techniques.',
                 'courseSem' => 1,
                 'courseCreds' => 3,
+                'courseCapacity' => 15, // Updated
                 'courseLocBuilding' => 'N28',
                 'courseLocRoom' => 'BK1',
                 'coursePreReq' => null,
@@ -35,6 +36,7 @@ class CourseSeeder extends Seeder
                 'courseDesc' => 'Introduction to technology and information systems.',
                 'courseSem' => 1,
                 'courseCreds' => 3,
+                'courseCapacity' => 15, // Updated
                 'courseLocBuilding' => 'N28',
                 'courseLocRoom' => 'BK2',
                 'coursePreReq' => null,
@@ -51,6 +53,7 @@ class CourseSeeder extends Seeder
                 'courseDesc' => 'Introduction to system development technology.',
                 'courseSem' => 2,
                 'courseCreds' => 4,
+                'courseCapacity' => 15, // Updated
                 'courseLocBuilding' => 'N28A',
                 'courseLocRoom' => 'BT4',
                 'coursePreReq' => 'SECP2613',
@@ -65,6 +68,7 @@ class CourseSeeder extends Seeder
                 'courseDesc' => 'Introduction to data mining concepts and techniques.',
                 'courseSem' => 2,
                 'courseCreds' => 3,
+                'courseCapacity' => 15, // Updated
                 'courseLocBuilding' => 'N28',
                 'courseLocRoom' => 'MPK3',
                 'coursePreReq' => null,
@@ -81,6 +85,7 @@ class CourseSeeder extends Seeder
                 'courseDesc' => 'Comprehensive study of application development lifecycle and methodologies.',
                 'courseSem' => 3,
                 'courseCreds' => 3,
+                'courseCapacity' => 15, // Updated
                 'courseLocBuilding' => 'N28A',
                 'courseLocRoom' => 'MPK7',
                 'coursePreReq' => 'SECP3723',
@@ -95,6 +100,7 @@ class CourseSeeder extends Seeder
                 'courseDesc' => 'Advanced concepts in designing and modelling enterprise systems.',
                 'courseSem' => 3,
                 'courseCreds' => 4,
+                'courseCapacity' => 15, // Updated
                 'courseLocBuilding' => 'N28',
                 'courseLocRoom' => 'MPK4',
                 'coursePreReq' => null,
@@ -106,7 +112,6 @@ class CourseSeeder extends Seeder
         ]);
 
         // Courses Bioinformatics (SECBH)
-        // Lecturers: L1005 (Bioinformatics), L2003 (Biosciences), L2007 (Biosciences)
         DB::table('course')->insertOrIgnore([
             // 1st Semester
             [
@@ -115,6 +120,7 @@ class CourseSeeder extends Seeder
                 'courseDesc' => 'Study of protein biomolecules and their functions.',
                 'courseSem' => 1,
                 'courseCreds' => 3,
+                'courseCapacity' => 15, // Updated
                 'courseLocBuilding' => 'N28A',
                 'courseLocRoom' => 'BT2',
                 'coursePreReq' => null,
@@ -129,6 +135,7 @@ class CourseSeeder extends Seeder
                 'courseDesc' => 'Techniques and applications of gene and protein technology.',
                 'courseSem' => 1,
                 'courseCreds' => 3,
+                'courseCapacity' => 15, // Updated
                 'courseLocBuilding' => 'N28',
                 'courseLocRoom' => 'BK5',
                 'coursePreReq' => null,
@@ -145,6 +152,7 @@ class CourseSeeder extends Seeder
                 'courseDesc' => 'Design and management of bioinformatics databases.',
                 'courseSem' => 2,
                 'courseCreds' => 3,
+                'courseCapacity' => 15, // Updated
                 'courseLocBuilding' => 'N28',
                 'courseLocRoom' => 'MPK1',
                 'coursePreReq' => null,
@@ -159,6 +167,7 @@ class CourseSeeder extends Seeder
                 'courseDesc' => 'Techniques for modelling and simulating biological systems.',
                 'courseSem' => 2,
                 'courseCreds' => 4,
+                'courseCapacity' => 15, // Updated
                 'courseLocBuilding' => 'N28A',
                 'courseLocRoom' => 'MPK2',
                 'coursePreReq' => 'SEBB4193',
@@ -175,6 +184,7 @@ class CourseSeeder extends Seeder
                 'courseDesc' => 'Comprehensive bioinformatics project work and research.',
                 'courseSem' => 3,
                 'courseCreds' => 4,
+                'courseCapacity' => 15, // Updated
                 'courseLocBuilding' => 'N28',
                 'courseLocRoom' => 'MPK10',
                 'coursePreReq' => null,
@@ -189,6 +199,7 @@ class CourseSeeder extends Seeder
                 'courseDesc' => 'Techniques for visualizing biological data and information.',
                 'courseSem' => 3,
                 'courseCreds' => 3,
+                'courseCapacity' => 15, // Updated
                 'courseLocBuilding' => 'N28A',
                 'courseLocRoom' => 'MPK9',
                 'coursePreReq' => null,
@@ -208,6 +219,7 @@ class CourseSeeder extends Seeder
                 'courseDesc' => 'Study of inorganic chemical compounds and reactions.',
                 'courseSem' => 1,
                 'courseCreds' => 3,
+                'courseCapacity' => 15, // Updated
                 'courseLocBuilding' => 'C06',
                 'courseLocRoom' => 'BK1',
                 'coursePreReq' => null,
@@ -222,6 +234,7 @@ class CourseSeeder extends Seeder
                 'courseDesc' => 'Fundamental principles and concepts of chemistry.',
                 'courseSem' => 1,
                 'courseCreds' => 2,
+                'courseCapacity' => 15, // Updated
                 'courseLocBuilding' => 'C05',
                 'courseLocRoom' => 'BK4',
                 'coursePreReq' => null,
@@ -238,6 +251,7 @@ class CourseSeeder extends Seeder
                 'courseDesc' => 'Study of reaction rates and electrochemical processes.',
                 'courseSem' => 2,
                 'courseCreds' => 3,
+                'courseCapacity' => 15, // Updated
                 'courseLocBuilding' => 'C06',
                 'courseLocRoom' => 'BK2',
                 'coursePreReq' => 'SSCC1014',
@@ -252,6 +266,7 @@ class CourseSeeder extends Seeder
                 'courseDesc' => 'Techniques and applications of molecular spectroscopy.',
                 'courseSem' => 2,
                 'courseCreds' => 3,
+                'courseCapacity' => 15, // Updated
                 'courseLocBuilding' => 'C06',
                 'courseLocRoom' => 'BK3',
                 'coursePreReq' => null,
@@ -268,6 +283,7 @@ class CourseSeeder extends Seeder
                 'courseDesc' => 'Introduction to quantum chemistry principles and applications.',
                 'courseSem' => 3,
                 'courseCreds' => 3,
+                'courseCapacity' => 15, // Updated
                 'courseLocBuilding' => 'C05',
                 'courseLocRoom' => 'BK2',
                 'coursePreReq' => null,
@@ -282,6 +298,7 @@ class CourseSeeder extends Seeder
                 'courseDesc' => 'Study of radioactive materials and their chemical properties.',
                 'courseSem' => 3,
                 'courseCreds' => 3,
+                'courseCapacity' => 15, // Updated
                 'courseLocBuilding' => 'C06',
                 'courseLocRoom' => 'BK5',
                 'coursePreReq' => null,
@@ -301,6 +318,7 @@ class CourseSeeder extends Seeder
                 'courseDesc' => 'Overview of mathematical concepts and techniques.',
                 'courseSem' => 1,
                 'courseCreds' => 2,
+                'courseCapacity' => 15, // Updated
                 'courseLocBuilding' => 'C03',
                 'courseLocRoom' => 'BK7',
                 'coursePreReq' => null,
@@ -315,6 +333,7 @@ class CourseSeeder extends Seeder
                 'courseDesc' => 'Fundamental principles and concepts of linear algebra.',
                 'courseSem' => 1,
                 'courseCreds' => 3,
+                'courseCapacity' => 15, // Updated
                 'courseLocBuilding' => 'C02',
                 'courseLocRoom' => 'BK2',
                 'coursePreReq' => null,
@@ -331,6 +350,7 @@ class CourseSeeder extends Seeder
                 'courseDesc' => 'Study of vector calculus and its applications.',
                 'courseSem' => 2,
                 'courseCreds' => 3,
+                'courseCapacity' => 15, // Updated
                 'courseLocBuilding' => 'C03',
                 'courseLocRoom' => 'BK4',
                 'coursePreReq' => null,
@@ -345,6 +365,7 @@ class CourseSeeder extends Seeder
                 'courseDesc' => 'Techniques for solving partial differential equations.',
                 'courseSem' => 2,
                 'courseCreds' => 3,
+                'courseCapacity' => 15, // Updated
                 'courseLocBuilding' => 'C02',
                 'courseLocRoom' => 'BT2',
                 'coursePreReq' => 'SSCM1523',
@@ -361,6 +382,7 @@ class CourseSeeder extends Seeder
                 'courseDesc' => 'Introduction to topological concepts and structures.',
                 'courseSem' => 3,
                 'courseCreds' => 4,
+                'courseCapacity' => 15, // Updated
                 'courseLocBuilding' => 'C02',
                 'courseLocRoom' => 'BK1',
                 'coursePreReq' => null,
@@ -375,6 +397,7 @@ class CourseSeeder extends Seeder
                 'courseDesc' => 'Study of non-Euclidean geometrical systems and their properties.',
                 'courseSem' => 3,
                 'courseCreds' => 3,
+                'courseCapacity' => 15, // Updated
                 'courseLocBuilding' => 'C02',
                 'courseLocRoom' => 'BK1',
                 'coursePreReq' => null,
