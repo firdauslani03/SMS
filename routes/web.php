@@ -30,6 +30,14 @@ Route::middleware('auth')->group(function () {
     
     Route::get('/course-registration/roadmap', [CourseRegistrationController::class, 'roadmap'])->name('course.roadmap');
     Route::get('/course-registration/submissions', [CourseRegistrationController::class, 'submissions'])->name('course.submissions');
+
+    Route::post('/notifications/{id}/mark-read', [ProfileController::class, 'markNotification'])->name('notifications.mark');
+});
+
+Route::middleware(['auth:lecturer'])->group(function () {
+    Route::get('/lecturer/dashboard', function () {
+        return view('lecturer.dashboard');
+    })->name('lecturer.dashboard');
 });
 
 require __DIR__.'/auth.php';

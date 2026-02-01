@@ -40,6 +40,11 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+
+        'lecturer' => [
+            'driver' => 'session',
+            'provider' => 'lecturers',
+        ],
     ],
 
     /*
@@ -65,13 +70,12 @@ return [
             // Change this line to point to your new Student model
             'model' => App\Models\Student::class, 
         ],
-    ],
 
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
-    
+        'lecturers' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Lecturer::class,
+        ],
+    ],    
 
     /*
     |--------------------------------------------------------------------------

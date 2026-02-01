@@ -57,4 +57,15 @@ class ProfileController extends Controller
 
         return Redirect::to('/');
     }
+
+    public function markNotification(Request $request, $id)
+    {
+        $notification = auth()->user()->notifications()->find($id);
+
+        if ($notification) {
+            $notification->markAsRead();
+        }
+
+        return response()->json(['success' => true]);
+    }
 }

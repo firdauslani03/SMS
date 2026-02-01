@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Course;
 use App\Models\Programme;
+use App\Notifications\PortalNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -205,6 +206,11 @@ class CourseRegistrationController extends Controller
             $message .= " Waiting for approval (Full): " . implode(', ', $waitingCourses) . ".";
         }
 
+        $student->notify(new PortalNotification(
+        'Registration submitted successfully! Check your status.',
+        route('course.submissions')
+        ));
+
         return redirect()->route('course.submissions')->with('success', $message);
     }
 
@@ -257,6 +263,11 @@ class CourseRegistrationController extends Controller
                 'registrationDate' => Carbon::now()->toDateString(),
                 'registrationTime' => Carbon::now()->toTimeString(),
             ]);
+
+        Auth::user()->notify(new PortalNotification(
+        'Your course registration has been cancelled.',
+        route('course.registration')
+        ));
 
         return redirect()->back()->with('success', 'Submission cancelled successfully.');
     }

@@ -41,7 +41,19 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+        $email = $this->input('email');
+        $password = $this->input('password');
+        
+        // Determine Guard based on Domain
+        if (str_contains($email, '@staff.utm.my')) {
+            $guard = 'lecturer';
+        } else {
+            $guard = 'web';
+        }
+
+        // Attempt Login
+        if (! Auth::guard($guard)->attempt(['email' => $email, 'password' => $password], $this->boolean('remember'))) {
+            
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
