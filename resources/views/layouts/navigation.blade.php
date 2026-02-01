@@ -77,6 +77,7 @@
                     </div>
                 </div>
 
+                @if(!Auth::guard('lecturer')->check())
                 <a href="{{ route('profile.edit') }}" class="flex items-center space-x-3 group">
                     <div class="h-12 w-12 rounded-2xl bg-brand-white/10 border border-brand-white/5 flex items-center justify-center group-hover:bg-brand-light group-hover:scale-105 transition-all duration-300 shadow-md">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-brand-light group-hover:text-brand-dark transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
@@ -85,6 +86,7 @@
                     </div>
                     <span class="text-sm font-bold text-brand-white group-hover:text-brand-medium transition-colors">{{ (Auth::user() ?? Auth::guard('lecturer')->user())->fName }}</span>
                 </a>
+                @endif
 
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
