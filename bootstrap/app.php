@@ -11,7 +11,10 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        // Register the alias here
+        $middleware->alias([
+            'no_cache' => \App\Http\Middleware\DisableBrowserCache::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

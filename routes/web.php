@@ -12,14 +12,17 @@ Route::get('/', function () {
 Route::get('/dashboard', function () {
     $student = Auth::user();
     $curriculum = $student->programCourses->groupBy('courseSem');
-
     return view('dashboard', compact('student', 'curriculum'));
-})->middleware(['auth', 'verified'])->name('dashboard');
+})->middleware(['auth', 'verified', 'no_cache'])->name('dashboard'); // Added no_cache
 
-Route::middleware('auth')->group(function () {
+// SHARED ROUTES
+Route::middleware(['auth:web,lecturer', 'no_cache'])->group(function () { // Added no_cache
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+});
 
+// STUDENT ROUTES
+Route::middleware(['auth', 'no_cache'])->group(function () { // Added no_cache
     Route::get('/course-registration', [CourseRegistrationController::class, 'index'])->name('course.registration');
     Route::post('/course-registration/add', [CourseRegistrationController::class, 'store'])->name('course.add');
     Route::delete('/course-registration/remove', [CourseRegistrationController::class, 'destroy'])->name('course.remove');
@@ -34,7 +37,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/notifications/{id}/mark-read', [ProfileController::class, 'markNotification'])->name('notifications.mark');
 });
 
-Route::middleware(['auth:lecturer'])->group(function () {
+// LECTURER ROUTES
+Route::middleware(['auth:lecturer', 'no_cache'])->group(function () { // Added no_cache
     Route::get('/lecturer/dashboard', function () {
         return view('lecturer.dashboard');
     })->name('lecturer.dashboard');

@@ -3,18 +3,20 @@
         <div class="flex justify-between h-24">
             
             <div class="flex items-center">
-                <a href="{{ route('dashboard') }}" class="group p-3 rounded-2xl bg-brand-white/10 border border-brand-white/5 hover:bg-brand-light hover:text-brand-dark hover:scale-105 transition-all duration-300 shadow-lg">
+                <a href="{{ Auth::guard('lecturer')->check() ? route('lecturer.dashboard') : route('dashboard') }}" class="group p-3 rounded-2xl bg-brand-white/10 border border-brand-white/5 hover:bg-brand-light hover:text-brand-dark hover:scale-105 transition-all duration-300 shadow-lg">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-brand-light group-hover:text-brand-dark transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                     </svg>
                 </a>
             </div>
 
-            <div class="hidden sm:flex items-center">
-                <a href="{{ route('course.registration') }}" class="px-8 py-3 rounded-2xl bg-brand-light text-brand-dark font-bold shadow-[0_0_15px_rgba(220,214,247,0.3)] hover:bg-brand-white hover:text-brand-dark hover:shadow-[0_0_25px_rgba(244,238,255,0.6)] transition-all duration-300 ease-out transform hover:-translate-y-1 tracking-wide border border-transparent">
-                    Register Course
-                </a>
-            </div>
+            @if(!Auth::guard('lecturer')->check())
+                <div class="hidden sm:flex items-center">
+                    <a href="{{ route('course.registration') }}" class="px-8 py-3 rounded-2xl bg-brand-light text-brand-dark font-bold shadow-[0_0_15px_rgba(220,214,247,0.3)] hover:bg-brand-white hover:text-brand-dark hover:shadow-[0_0_25px_rgba(244,238,255,0.6)] transition-all duration-300 ease-out transform hover:-translate-y-1 tracking-wide border border-transparent">
+                        Register Course
+                    </a>
+                </div>
+            @endif
 
             <div class="hidden sm:flex items-center space-x-6">
                 
@@ -107,13 +109,15 @@
 
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden bg-[#2a2e4b] border-b border-brand-white/10">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" class="text-brand-light hover:text-brand-white hover:bg-brand-white/10">
+            <x-responsive-nav-link :href="Auth::guard('lecturer')->check() ? route('lecturer.dashboard') : route('dashboard')" :active="request()->routeIs('dashboard') || request()->routeIs('lecturer.dashboard')" class="text-brand-light hover:text-brand-white hover:bg-brand-white/10">
                 {{ __('Home') }}
             </x-responsive-nav-link>
             
+            @if(!Auth::guard('lecturer')->check())
             <a href="{{ route('course.registration') }}" class="block w-full pl-3 pr-4 py-2 border-l-4 border-transparent text-left text-base font-medium text-brand-dark bg-brand-light hover:bg-brand-white transition duration-150 ease-in-out">
                 Register Course
             </a>
+            @endif
         </div>
 
         <div class="pt-4 pb-1 border-t border-brand-white/10">
