@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use Illuminate\Validation\Rule;
 
 class ProfileController extends Controller
 {
@@ -67,5 +68,39 @@ class ProfileController extends Controller
         }
 
         return response()->json(['success' => true]);
+    }
+
+    public function editLecturer(Request $request): View
+    {
+        return view('lecturer.profile', [
+            'user' => $request->user(),
+        ]);
+    }
+
+    public function updateLecturer(Request $request): RedirectResponse
+    {
+        // Custom validation for Lecturer fields
+        $validated = $request->validate([
+            'fName' => ['required', 'string', 'max:255'],
+            'lName' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255', Rule::unique('lecturer')->ignore($request->user()->staffNum, 'staffNum')],
+            'phoneOp' => ['nullable', 'string', 'max:10'],
+            'subNum' => ['nullable', 'string', 'max:20'],
+            'officeBuilding' => ['nullable', 'string', 'max:50'],
+            'officeFloor' => ['nullable', 'string', 'max:10'],
+            'officeRoom' => ['nullable', 'string', 'max:20'],
+            'qualification' => ['nullable', 'string', 'max:100'],
+        ]);
+
+        $user = $request->user();
+        $user->fill($validated);
+
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
+        }
+
+        $user->save();
+
+        return Redirect::route('lecturer.profile.edit')->with('status', 'profile-updated');
     }
 }
