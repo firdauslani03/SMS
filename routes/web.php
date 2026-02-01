@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\CourseRegistrationController;
+use App\Http\Controllers\LecturerController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -42,6 +43,8 @@ Route::middleware(['auth:lecturer', 'no_cache'])->group(function () { // Added n
     Route::get('/lecturer/dashboard', function () {
         return view('lecturer.dashboard');
     })->name('lecturer.dashboard');
+
+    Route::get('/lecturer/courses', [LecturerController::class, 'courses'])->name('lecturer.courses');
 });
 
 require __DIR__.'/auth.php';
