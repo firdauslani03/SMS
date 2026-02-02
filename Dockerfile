@@ -45,5 +45,7 @@ RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf
 # 12. Expose Port 80
 EXPOSE 80
 
-# 13. Start Apache
-CMD ["apache2-foreground"]
+# 13. Copy and Run the Entrypoint Script
+COPY entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/entrypoint.sh
+CMD ["/usr/local/bin/entrypoint.sh"]
