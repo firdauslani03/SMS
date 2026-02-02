@@ -28,6 +28,12 @@ class RegistrationController extends Controller
                 'course.courseSem'
             );
 
+        // 1. FILTER: Hide 'Cancelled' by default to keep the list clean
+        // Only show them if the admin specifically filters for 'Cancelled' or 'All'
+        if ($request->input('status') !== 'Cancelled' && $request->input('status') !== 'all') {
+            $query->where('registration.status', '!=', 'Cancelled');
+        }
+
         // Optional Search Filter
         if ($request->filled('search')) {
             $search = $request->search;
@@ -39,7 +45,7 @@ class RegistrationController extends Controller
             });
         }
 
-        // Filter by Status
+        // Filter by Status (Specific)
         if ($request->filled('status') && $request->status !== 'all') {
             $query->where('registration.status', $request->status);
         }
@@ -101,12 +107,12 @@ class RegistrationController extends Controller
                 break;
 
             case 'cancel':
-                // Only allow if Waiting for Approval
-                if ($status !== 'Waiting for Approval') {
-                    return redirect()->back()->with('error', 'Only pending registrations can be cancelled.');
+                // UPDATE: Allow admins to cancel Approved courses too (Manual Override)
+                if (!in_array($status, ['Waiting for Approval', 'Approved', 'Pending'])) {
+                    return redirect()->back()->with('error', 'Cannot cancel a registration with this status.');
                 }
                 $newStatus = 'Cancelled';
-                $message = 'Registration cancelled.';
+                $message = 'Registration cancelled (Withdrawn).';
                 break;
             
             case 'amend':
@@ -125,8 +131,8 @@ class RegistrationController extends Controller
             ->where('courseCode', $courseCode)
             ->update([
                 'status' => $newStatus,
-                // Optional: Update modification timestamp?
-                // 'registrationDate' => now()->toDateString(), 
+                // Optional: You might want to update the timestamp to reflect the admin action
+                // 'updated_at' => now(), 
             ]);
 
         return redirect()->back()->with('success', $message);

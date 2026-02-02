@@ -15,13 +15,58 @@ class CourseController extends Controller
      */
     public function index()
     {
-        // Eager load relationships for performance
         $courses = Course::with(['lecturer', 'programme'])
                     ->orderBy('courseSem')
                     ->orderBy('courseCode')
                     ->paginate(10);
 
         return view('admin.courses.index', compact('courses'));
+    }
+
+    /**
+     * Show the form for creating a new course.
+     */
+    public function create()
+    {
+        $lecturers = Lecturer::all();
+        $programmes = Programme::all();
+        
+        return view('admin.courses.create', compact('lecturers', 'programmes'));
+    }
+
+    /**
+     * Store a newly created course in storage.
+     */
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'courseCode' => 'required|string|unique:course,courseCode|max:20', // Unique check
+            'courseName' => 'required|string|max:255',
+            'courseCreds' => 'required|integer|min:1',
+            'courseCapacity' => 'required|integer|min:1',
+            'courseSem' => 'required|integer',
+            'courseLocBuilding' => 'required|string',
+            'courseLocRoom' => 'required|string',
+            'courseDate' => 'required|string',
+            // Time Inputs
+            'courseTimeStart' => 'required|date_format:H:i',
+            'courseTimeEnd' => 'required|date_format:H:i|after:courseTimeStart',
+            // Foreign Keys
+            'staffNum' => 'required|exists:lecturer,staffNum',
+            'progCode' => 'required|exists:programme,progCode',
+        ]);
+
+        // Merge Time
+        $validated['courseTime'] = $validated['courseTimeStart'] . ' - ' . $validated['courseTimeEnd'];
+        
+        // Remove helper fields
+        unset($validated['courseTimeStart']);
+        unset($validated['courseTimeEnd']);
+
+        Course::create($validated);
+
+        return redirect()->route('admin.courses.index')
+            ->with('success', "Course {$validated['courseCode']} created successfully.");
     }
 
     /**
@@ -42,8 +87,7 @@ class CourseController extends Controller
         $lecturers = Lecturer::all();
         $programmes = Programme::all();
 
-        // SPLIT LOGIC: Assumes format "HH:mm - HH:mm"
-        // If courseTime is "08:00 - 10:00", we separate it so the view can pre-fill the inputs.
+        // SPLIT LOGIC
         $times = explode('-', $course->courseTime); 
         $startTime = trim($times[0] ?? '');
         $endTime = trim($times[1] ?? '');
@@ -66,16 +110,15 @@ class CourseController extends Controller
             'courseLocBuilding' => 'required|string',
             'courseLocRoom' => 'required|string',
             'courseDate' => 'required|string',
-            // Validate the TWO separate time inputs
             'courseTimeStart' => 'required|date_format:H:i',
             'courseTimeEnd' => 'required|date_format:H:i|after:courseTimeStart',
             'staffNum' => 'required|exists:lecturer,staffNum',
+            // Note: usually we don't update progCode or courseCode after creation to maintain integrity, 
+            // but if you need to, add them here.
         ]);
 
-        // MERGE LOGIC: Combine start and end time back into "HH:mm - HH:mm" string
         $validated['courseTime'] = $validated['courseTimeStart'] . ' - ' . $validated['courseTimeEnd'];
         
-        // Remove the temporary fields so they don't break the Model update
         unset($validated['courseTimeStart']);
         unset($validated['courseTimeEnd']);
 

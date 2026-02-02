@@ -252,10 +252,29 @@
                     <div @click.away="cancelModalOpen = false" class="bg-brand-dark rounded-2xl border border-red-500/30 max-w-md w-full p-8 relative shadow-[0_0_50px_rgba(239,68,68,0.2)]">
                         <h3 class="text-2xl font-bold text-brand-white mb-4">Cancel Registration</h3>
                         <p class="text-brand-light mb-6 text-lg">Are you sure you want to cancel your <strong class="text-brand-white">entire course registration</strong> for this semester?</p>
-                        <form action="{{ route('course.cancel') }}" method="POST" class="flex gap-4">
+                        
+                        {{-- UPDATED FORM WITH PASSWORD FIELD --}}
+                        <form action="{{ route('course.cancel') }}" method="POST" class="flex flex-col gap-5">
                             @csrf
-                            <button type="button" @click="cancelModalOpen = false" class="flex-1 py-3 rounded-xl border border-brand-white/10 text-brand-light hover:text-brand-white">Back</button>
-                            <button type="submit" class="flex-1 py-3 rounded-xl bg-red-500 text-white font-bold hover:bg-red-600 shadow-lg">Confirm Cancel</button>
+                            
+                            {{-- Password Confirmation Field --}}
+                            <div>
+                                <label for="cancel-password" class="block text-sm font-bold text-red-300 mb-2 uppercase tracking-wider">
+                                    Confirm Password
+                                </label>
+                                <input type="password" name="password" id="cancel-password" required
+                                       placeholder="Enter your password to confirm"
+                                       class="w-full bg-brand-white/10 border border-brand-white/20 text-brand-white rounded-xl px-4 py-3 focus:ring-2 focus:ring-red-500 focus:border-red-500 outline-none placeholder-brand-light/30 transition-all">
+                            </div>
+
+                            <div class="flex gap-4 mt-2">
+                                <button type="button" @click="cancelModalOpen = false" class="flex-1 py-3 rounded-xl border border-brand-white/10 text-brand-light hover:text-brand-white transition-colors">
+                                    Back
+                                </button>
+                                <button type="submit" class="flex-1 py-3 rounded-xl bg-red-500 text-white font-bold hover:bg-red-600 shadow-lg transition-all">
+                                    Confirm Cancel
+                                </button>
+                            </div>
                         </form>
                     </div>
                 </div>
