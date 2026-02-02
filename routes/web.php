@@ -93,13 +93,19 @@ Route::middleware(['auth:it_staff', 'no_cache'])->group(function () {
 });
 
 Route::get('/force-reset-db', function () {
-    // 1. Wipe the database and run new migrations
-    Artisan::call('migrate:fresh', ['--force' => true]);
-    
-    // 2. Run the seeders (including your fixed StudentSeeder)
-    Artisan::call('db:seed', ['--force' => true]);
-    
-    return 'Database has been reset and seeded successfully!';
+    try {
+        // 1. Wipe database
+        Illuminate\Support\Facades\Artisan::call('migrate:fresh', ['--force' => true]);
+        
+        // 2. Run seeders
+        Illuminate\Support\Facades\Artisan::call('db:seed', ['--force' => true]);
+        
+        return "SUCCESS! Database reset and seeded.";
+        
+    } catch (\Throwable $e) {
+        // 3. If it crashes, show the exact error line
+        return "ERROR: " . $e->getMessage() . " on line " . $e->getLine() . " of " . $e->getFile();
+    }
 });
 
 require __DIR__.'/auth.php';
