@@ -9,6 +9,7 @@ use App\Models\Course;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Artisan;
 
 Route::get('/', function () {
     return redirect()->route('login');
@@ -89,6 +90,16 @@ Route::middleware(['auth:it_staff', 'no_cache'])->group(function () {
     Route::get('admin/registrations', [RegistrationController::class, 'index'])->name('admin.registrations.index');
     Route::post('admin/registrations/update', [RegistrationController::class, 'updateStatus'])->name('admin.registrations.update');
 
+});
+
+Route::get('/force-reset-db', function () {
+    // 1. Wipe the database and run new migrations
+    Artisan::call('migrate:fresh', ['--force' => true]);
+    
+    // 2. Run the seeders (including your fixed StudentSeeder)
+    Artisan::call('db:seed', ['--force' => true]);
+    
+    return 'Database has been reset and seeded successfully!';
 });
 
 require __DIR__.'/auth.php';
