@@ -78,6 +78,18 @@ class StudentSeeder extends Seeder
 
                     // 2. Register Student for Available Courses with 'Approved' status
                     foreach ($courses as $courseCode) {
+                    // A. Get the current capacity info for this specific course
+                    $course = DB::table('course')->where('courseCode', $courseCode)->first();
+
+                    // B. Count how many students are ALREADY registered
+                    $currentCount = DB::table('registration')
+                        ->where('courseCode', $courseCode)
+                        ->where('status', 'Approved')
+                        ->count();
+
+                    // C. Check if there is space (assuming the column is named 'capacity')
+                    if ($course && $currentCount < $course->capacity) {
+                        
                         DB::table('registration')->insertOrIgnore([
                             'courseCode' => $courseCode,
                             'matricNum' => $matricNum,
@@ -86,9 +98,14 @@ class StudentSeeder extends Seeder
                             'registrationTime' => $faker->time(),
                             'modifyCourseCode' => null,
                         ]);
+
+                    } else {
+                        // Optional: You could register them with 'Rejected' status if full
+                        // or just skip them (do nothing).
                     }
                 }
             }
         }
     }
+}
 }
