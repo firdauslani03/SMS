@@ -31,8 +31,8 @@ Route::middleware(['auth', 'no_cache'])->group(function () {
     Route::delete('/course-registration/remove', [CourseRegistrationController::class, 'destroy'])->name('course.remove');
     Route::post('/course-registration/confirm', [CourseRegistrationController::class, 'confirm'])->name('course.confirm');
 
-    Route::post('/course/cancel', [CourseRegistrationController::class, 'cancel'])->name('course.cancel');
-    Route::post('/course/modify', [CourseRegistrationController::class, 'modify'])->name('course.modify');
+    Route::post('/course-registration/modify', [CourseRegistrationController::class, 'modify'])->name('course.modify');
+    Route::post('/course-registration/cancel', [CourseRegistrationController::class, 'cancel'])->name('course.cancel');
     
     Route::get('/course-registration/roadmap', [CourseRegistrationController::class, 'roadmap'])->name('course.roadmap');
     Route::get('/course-registration/submissions', [CourseRegistrationController::class, 'submissions'])->name('course.submissions');

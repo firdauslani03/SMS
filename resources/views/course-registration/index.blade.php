@@ -31,6 +31,26 @@
                 @endif
             </div>
 
+            {{-- MODIFICATION MODE ALERT --}}
+            {{-- Show this if the student has pending courses but previously had a submission history (optional logic) --}}
+            @if(!$hasActiveSubmission && $registeredCourses->isNotEmpty())
+                <div class="mb-8 p-4 rounded-2xl bg-blue-500/10 border border-blue-500/20 flex items-start gap-4 animate-pulse">
+                    <div class="p-2 bg-blue-500/20 rounded-lg text-blue-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-brand-white">Registration Modification Active</h3>
+                        <p class="text-blue-200/80">
+                            You have reopened your registration. You can now Add or Remove courses. 
+                            <br>
+                            <span class="text-white font-bold underline">You must click "Confirm Registration" below to save your changes.</span>
+                        </p>
+                    </div>
+                </div>
+            @endif
+
             <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
                 
                 {{-- Sidebar Navigation --}}
