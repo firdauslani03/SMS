@@ -1,23 +1,49 @@
-FROM php:8.2-fpm
+# 1. Use PHP 8.2 with Apache
+FROM php:8.2-apache
 
+# 2. Install system dependencies (Unzip, Git, Node.js, NPM)
 RUN apt-get update && apt-get install -y \
-    git curl libpng-dev libonig-dev libxml2-dev zip unzip nginx \
-    libpq-dev
+    libzip-dev \
+    unzip \
+    git \
+    libpng-dev \
+    libonig-dev \
+    libxml2-dev \
+    nodejs \
+    npm
 
-RUN docker-php-ext-install pdo pdo_mysql pdo_pgsql mbstring exif pcntl bcmath gd
+# 3. Install PHP Extensions required by Laravel
+RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
 
+# 4. Enable Apache Mod Rewrite (Required for Laravel routes)
+RUN a2enmod rewrite
+
+# 5. Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-WORKDIR /var/www
+# 6. Set working directory
+WORKDIR /var/www/html
 
+# 7. Copy project files into the container
 COPY . .
 
-RUN composer install --optimize-autoloader --no-dev
+# 8. Install PHP Dependencies
+RUN composer install --no-interaction --optimize-autoloader --no-dev
 
-RUN chown -R www-data:www-data /var/www
+# 9. Install Node Dependencies & BUILD ASSETS (This fixes your error)
+RUN npm install
+RUN npm run build
 
-COPY nginx.conf /etc/nginx/sites-available/default
+# 10. Set Permissions for Laravel
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
-EXPOSE 10000
+# 11. Point Apache to the 'public' folder
+ENV APACHE_DOCUMENT_ROOT /var/www/html/public
+RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
+RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf
 
-CMD service nginx start && php artisan migrate --force && php artisan db:seed --force && php-fpm
+# 12. Expose Port 80
+EXPOSE 80
+
+# 13. Start Apache
+CMD ["apache2-foreground"]
