@@ -17,17 +17,18 @@ class CourseRegistrationController extends Controller
         $student = Auth::user();
 
         // CHECK: Does the student have an active submission?
-        // If they have any course with 'approved' or 'waiting for approval', they are locked.
+        // If they have any course with 'Approved', 'Approved', or 'Waiting for Approval', they are locked.
         $hasActiveSubmission = $student->courses()
-            ->wherePivotIn('status', ['approved', 'waiting for approval'])
+            ->wherePivotIn('status', ['Approved', 'Waiting for Approval'])
             ->exists();
 
         $registeredCourses = $student->courses;
         $registeredCourseCodes = $registeredCourses->pluck('courseCode')->toArray();
 
-        // Count only 'approved' students for availability
+        // Count 'Approved' AND 'Approved' students for availability
+        // This ensures seeded data ('Approved') is counted in the progress bar
         $query = Course::withCount(['students' => function ($q) {
-            $q->where('registration.status', 'approved');
+            $q->whereIn('registration.status', ['Approved']);
         }])->whereHas('programme', function($q) use ($student) {
             $q->where('facCode', $student->facCode);
         });
@@ -72,8 +73,8 @@ class CourseRegistrationController extends Controller
     {
         $student = Auth::user();
 
-        // BLOCK: Prevent adding if submitted
-        if ($student->courses()->wherePivotIn('status', ['approved', 'waiting for approval'])->exists()) {
+        // BLOCK: Prevent adding if submitted (Include 'Approved')
+        if ($student->courses()->wherePivotIn('status', ['Approved', 'Waiting for Approval'])->exists()) {
             return redirect()->back()->with('error', 'Registration is closed. You have already submitted.');
         }
 
@@ -112,8 +113,8 @@ class CourseRegistrationController extends Controller
     {
         $student = Auth::user();
 
-        // BLOCK: Prevent removing if submitted
-        if ($student->courses()->wherePivotIn('status', ['approved', 'waiting for approval'])->exists()) {
+        // BLOCK: Prevent removing if submitted (Include 'Approved')
+        if ($student->courses()->wherePivotIn('status', ['Approved', 'Waiting for Approval'])->exists()) {
             return redirect()->back()->with('error', 'Registration is closed. You cannot remove courses after submission.');
         }
 
@@ -130,8 +131,8 @@ class CourseRegistrationController extends Controller
     {
         $student = Auth::user();
 
-        // BLOCK: Prevent re-confirming if submitted
-        if ($student->courses()->wherePivotIn('status', ['approved', 'waiting for approval'])->exists()) {
+        // BLOCK: Prevent re-confirming if submitted (Include 'Approved')
+        if ($student->courses()->wherePivotIn('status', ['Approved', 'Waiting for Approval'])->exists()) {
             return redirect()->back()->with('error', 'Registration already submitted.');
         }
         
@@ -173,18 +174,18 @@ class CourseRegistrationController extends Controller
         $waitingCourses = [];
 
         foreach ($pendingCourses as $course) {
-            // Count currently 'approved' students
+            // Count currently 'Approved' students
             $currentConfirmed = $course->students()
-                ->wherePivot('status', 'approved')
+                ->wherePivotIn('status', ['Approved'])
                 ->count();
             
             if ($currentConfirmed < $course->courseCapacity) {
                 // Auto-approve
-                $status = 'approved';
+                $status = 'Approved';
                 $approvedCourses[] = $course->courseCode;
             } else {
                 // Full -> Waiting for Approval
-                $status = 'waiting for approval';
+                $status = 'Waiting for Approval';
                 $waitingCourses[] = $course->courseCode;
             }
 
@@ -245,9 +246,9 @@ class CourseRegistrationController extends Controller
     {
         $student = Auth::user();
 
-        // Check for active courses to cancel
+        // Check for active courses to cancel (Include 'Approved')
         $hasActive = $student->courses()
-                             ->wherePivotIn('status', ['approved', 'waiting for approval'])
+                             ->wherePivotIn('status', ['Approved', 'Waiting for Approval'])
                              ->exists();
 
         if (!$hasActive) {
@@ -257,7 +258,7 @@ class CourseRegistrationController extends Controller
         // Bulk update to 'cancelled'
         DB::table('registration')
             ->where('matricNum', $student->matricNum)
-            ->whereIn('status', ['approved', 'waiting for approval'])
+            ->whereIn('status', ['Approved', 'Waiting for Approval'])
             ->update([
                 'status' => 'cancelled',
                 'registrationDate' => Carbon::now()->toDateString(),

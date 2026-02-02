@@ -31,7 +31,12 @@ class StudentSeeder extends Seeder
         foreach ($programs as $progCode => $facCode) {
             foreach ($semesters as $sem) {
                 // Constraint: Make sure courses have at least 4 and max 14 students.
-                $numberOfStudents = rand(4, 14);
+                // We explicitly set SECPH Semester 2 to have 14 students to meet the specific requirement.
+                if ($progCode === 'SECPH' && $sem === 2) {
+                    $numberOfStudents = 14;
+                } else {
+                    $numberOfStudents = rand(4, 14);
+                }
 
                 // Get courses offered for this Program and Semester
                 $courses = DB::table('course')
@@ -62,7 +67,7 @@ class StudentSeeder extends Seeder
 
                     $yearOfStudy = ceil($sem / 2);
                     
-                    // Create Student
+                    // 1. Create Student
                     DB::table('student')->insertOrIgnore([
                         'matricNum' => $matricNum,
                         'fName' => $fName,
@@ -79,6 +84,18 @@ class StudentSeeder extends Seeder
                         'facCode' => $facCode,
                         'progCode' => $progCode,
                     ]);
+
+                    // 2. Register Student for Available Courses in their Cohort
+                    foreach ($courses as $courseCode) {
+                        DB::table('registration')->insertOrIgnore([
+                            'courseCode' => $courseCode,
+                            'matricNum' => $matricNum,
+                            'status' => 'Approved',
+                            'registrationDate' => $faker->date(),
+                            'registrationTime' => $faker->time(),
+                            'modifyCourseCode' => null,
+                        ]);
+                    }
                 }
             }
         }
