@@ -88,7 +88,7 @@ class StudentSeeder extends Seeder
                         ->count();
 
                     // C. Check if there is space (assuming the column is named 'capacity')
-                    if ($course && $currentCount < $course->capacity) {
+                    if ($course && $currentCount < $course->courseCapacity) {
                         
                         DB::table('registration')->insertOrIgnore([
                             'courseCode' => $courseCode,
