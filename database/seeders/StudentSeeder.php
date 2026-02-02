@@ -16,7 +16,7 @@ class StudentSeeder extends Seeder
     {
         $faker = Faker::create();
 
-        // Define which Faculty each Program belongs to (matching ProgrammeSeeder)
+        // Define which Faculty each Program belongs to
         $programs = [
             'SECPH' => 'FC',
             'SECBH' => 'FC',
@@ -24,14 +24,13 @@ class StudentSeeder extends Seeder
             'SSCEH' => 'FS'
         ];
 
-        // We only have courses for Semesters 1, 2, and 3 in the CourseSeeder.
-        // We will create student cohorts for these semesters to populate those courses.
+        // Semesters to populate
         $semesters = [1, 2, 3];
 
         foreach ($programs as $progCode => $facCode) {
             foreach ($semesters as $sem) {
                 // Constraint: Make sure courses have at least 4 and max 14 students.
-                // We explicitly set SECPH Semester 2 to have 14 students to meet the specific requirement.
+                // explicitly set SECPH Semester 2 to have 14 students.
                 if ($progCode === 'SECPH' && $sem === 2) {
                     $numberOfStudents = 14;
                 } else {
@@ -49,22 +48,14 @@ class StudentSeeder extends Seeder
                 }
 
                 for ($i = 0; $i < $numberOfStudents; $i++) {
-                    // Determine Matric Prefix based on Faculty
-                    // FC (Faculty of Computing) -> 'CS'
-                    // FS (Faculty of Science)   -> 'FS'
                     $facultyPrefix = ($facCode === 'FC') ? 'CS' : 'FS';
 
                     // Generate Matric Num: A25 + FacultyPrefix + 4 random digits
-                    // Format: A25CSxxxx or A25FSxxxx
                     $matricNum = 'A25' . $facultyPrefix . $faker->unique()->numberBetween(1000, 9999);
                     
                     $fName = $faker->firstName;
                     $lName = $faker->lastName;
-
-                    // Generate Email with @graduate.utm.my domain
-                    // We append a random number to the name to ensure uniqueness and realism
                     $email = strtolower($fName . '.' . $lName . $faker->numberBetween(1, 999) . '@graduate.utm.my');
-
                     $yearOfStudy = ceil($sem / 2);
                     
                     // 1. Create Student
@@ -72,20 +63,20 @@ class StudentSeeder extends Seeder
                         'matricNum' => $matricNum,
                         'fName' => $fName,
                         'lName' => $lName,
-                        'ic' => $faker->unique()->numerify('############'), // 12 digits
+                        'ic' => $faker->unique()->numerify('############'),
                         'email' => $email,
-                        'pass' => Hash::make('password'), // Default password
+                        'pass' => Hash::make('password'),
                         'year' => $yearOfStudy,
                         'semester' => $sem,
                         'countryCode' => 'MAS',
                         'phoneOp' => '01',
-                        'subNum' => $faker->numerify('########'), // 8 digits
+                        'subNum' => $faker->numerify('########'),
                         'cgpa' => $faker->randomFloat(2, 2.00, 4.00),
                         'facCode' => $facCode,
                         'progCode' => $progCode,
                     ]);
 
-                    // 2. Register Student for Available Courses in their Cohort
+                    // 2. Register Student for Available Courses with 'Approved' status
                     foreach ($courses as $courseCode) {
                         DB::table('registration')->insertOrIgnore([
                             'courseCode' => $courseCode,

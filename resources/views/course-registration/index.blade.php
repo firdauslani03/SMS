@@ -3,6 +3,7 @@
     <div class="py-12" x-data="{ 
         futureModalOpen: false, 
         confirmModalOpen: false, 
+        fullModalOpen: false,
         targetForm: null,
         targetSem: '' 
     }">
@@ -158,13 +159,14 @@
                                             $courseSem = $course->courseSem;
                                             
                                             // LOGIC UPDATE:
-                                            // 1. Restricted Future: More than 1 semester ahead (e.g. Student Sem 1, Course Sem 3+)
+                                            // 1. Restricted Future: More than 1 semester ahead
                                             $isRestrictedFuture = $courseSem > ($studentSem + 1);
                                             
-                                            // 2. Current or Previous: Needs warning
+                                            // 2. Full Capacity Check
+                                            $isFull = $course->students_count >= $course->courseCapacity;
+
+                                            // 3. Current or Previous Warning
                                             $isCurrentOrPast = $courseSem <= $studentSem;
-                                            
-                                            // 3. Next Semester ($courseSem == $studentSem + 1): Allowed freely (no flag needed)
                                             
                                             $isRegistered = in_array($course->courseCode, $registeredCourseCodes);
                                         @endphp
@@ -194,6 +196,11 @@
                                                             <span class="text-brand-light/40">•</span>
                                                             <span class="text-xs font-bold text-brand-light/80 uppercase tracking-wider group-hover:text-brand-dark/70 transition-colors">{{ $course->progCode }}</span>
                                                         </div>
+                                                        @if($isFull)
+                                                            <span class="bg-red-500/80 text-white text-[10px] font-bold uppercase px-2 py-0.5 rounded shadow-sm">
+                                                                Full
+                                                            </span>
+                                                        @endif
                                                     </div>
                                                     
                                                     {{-- Availability Section --}}
@@ -202,12 +209,12 @@
                                                             <span class="text-xs font-bold uppercase tracking-widest text-brand-white/70 group-hover:text-brand-dark/70">
                                                                 Registered Students
                                                             </span>
-                                                            <span class="text-lg font-black text-brand-white drop-shadow-md group-hover:text-brand-dark">
+                                                            <span class="text-lg font-black {{ $isFull ? 'text-red-400' : 'text-brand-white' }} drop-shadow-md group-hover:text-brand-dark">
                                                                 {{ $course->students_count }} / {{ $course->courseCapacity }}
                                                             </span>
                                                         </div>
                                                         <div class="h-3 w-full bg-brand-dark/50 rounded-full overflow-hidden border border-brand-white/10 group-hover:border-brand-dark/20">
-                                                            <div class="h-full bg-brand-medium shadow-[0_0_10px_rgba(166,177,225,0.8)]" 
+                                                            <div class="h-full {{ $isFull ? 'bg-red-500' : 'bg-brand-medium' }} shadow-[0_0_10px_rgba(166,177,225,0.8)]" 
                                                                  style="width: {{ min(100, ($course->students_count / max(1, $course->courseCapacity)) * 100) }}%">
                                                             </div>
                                                         </div>
@@ -238,6 +245,8 @@
                                                             <button type="submit" 
                                                                     @if($isRestrictedFuture)
                                                                         @click.prevent="futureModalOpen = true"
+                                                                    @elseif($isFull)
+                                                                        @click.prevent="fullModalOpen = true; targetForm = $el.closest('form')"
                                                                     @elseif($isCurrentOrPast)
                                                                         @click.prevent="confirmModalOpen = true; targetForm = $el.closest('form'); targetSem = '{{ $courseSem }}'"
                                                                     @endif
@@ -363,7 +372,7 @@
             </div>
         </div>
 
-        {{-- CONFIRMATION MODAL --}}
+        {{-- CONFIRMATION MODAL (Current/Past) --}}
         <div x-show="confirmModalOpen" 
              style="display: none;" 
              class="fixed inset-0 z-50 overflow-y-auto" 
@@ -403,6 +412,54 @@
                         </button>
                         <button type="button" 
                                 @click="confirmModalOpen = false"
+                                class="mt-3 w-full inline-flex justify-center rounded-xl border border-brand-white/10 shadow-sm px-8 py-3 bg-transparent text-lg font-bold text-brand-light hover:text-brand-white hover:bg-brand-white/10 focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto transition-colors">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- FULL COURSE MODAL --}}
+        <div x-show="fullModalOpen" 
+             style="display: none;" 
+             class="fixed inset-0 z-50 overflow-y-auto" 
+             aria-labelledby="modal-title" role="dialog" aria-modal="true">
+            <div x-show="fullModalOpen" class="fixed inset-0 bg-brand-dark/90 backdrop-blur-md transition-opacity"></div>
+            <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+                <div x-show="fullModalOpen"
+                     @click.away="fullModalOpen = false"
+                     class="inline-block align-bottom bg-brand-dark rounded-2xl border border-brand-white/10 text-left overflow-hidden shadow-[0_0_50px_rgba(251,146,60,0.2)] transform transition-all sm:my-8 sm:align-middle sm:max-w-xl w-full">
+                    <div class="px-6 pt-8 pb-8 sm:p-10">
+                        <div class="sm:flex sm:items-start">
+                            <div class="mx-auto flex-shrink-0 flex items-center justify-center h-16 w-16 rounded-full bg-orange-500/20 sm:mx-0 sm:h-16 sm:w-16 border border-orange-500/30">
+                                <svg class="h-8 w-8 text-orange-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                </svg>
+                            </div>
+                            <div class="mt-5 text-center sm:mt-0 sm:ml-8 sm:text-left">
+                                <h3 class="text-3xl leading-8 font-extrabold text-brand-white" id="modal-title">
+                                    Course Full
+                                </h3>
+                                <div class="mt-4">
+                                    <p class="text-lg text-brand-light/90 leading-relaxed">
+                                        This course has reached its full capacity. 
+                                        <br><br>
+                                        You can still register, but your status will be set to <strong class="text-orange-300">Waiting for Approval</strong> pending faculty review.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-brand-white/5 px-6 py-5 sm:px-10 sm:flex sm:flex-row-reverse border-t border-brand-white/10">
+                        <button type="button" 
+                                @click="targetForm.submit(); fullModalOpen = false"
+                                class="w-full inline-flex justify-center rounded-xl border border-transparent shadow-sm px-8 py-3 bg-brand-white text-lg font-bold text-brand-dark hover:bg-brand-light focus:outline-none sm:ml-3 sm:w-auto transition-colors">
+                            I Understand, Proceed
+                        </button>
+                        <button type="button" 
+                                @click="fullModalOpen = false"
                                 class="mt-3 w-full inline-flex justify-center rounded-xl border border-brand-white/10 shadow-sm px-8 py-3 bg-transparent text-lg font-bold text-brand-light hover:text-brand-white hover:bg-brand-white/10 focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto transition-colors">
                             Cancel
                         </button>
