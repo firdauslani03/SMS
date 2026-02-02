@@ -1,6 +1,6 @@
 <x-app-layout title="My Submissions">
     {{-- Alpine Data for Modals --}}
-    <div class="py-12" x-data="{ 
+    <div class="py-12 print:hidden" x-data="{ 
         cancelModalOpen: false, 
         modifyModalOpen: false 
     }">
@@ -30,7 +30,7 @@
 
             <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
                 
-                {{-- Sidebar Navigation (RESIZED TO MATCH STANDARD) --}}
+                {{-- Sidebar Navigation --}}
                 <div class="lg:col-span-1 animate-fade-in-up delay-100">
                     <nav class="bg-brand-white/15 backdrop-blur-xl rounded-3xl p-6 shadow-xl border border-brand-white/20 sticky top-24 space-y-3">
                         <a href="{{ route('course.registration') }}" 
@@ -77,7 +77,7 @@
                             </a>
                         </div>
                     @else
-                        {{-- THE UNIFIED TICKET CONTAINER --}}
+                        {{-- THE WEB VIEW CARD --}}
                         <div class="relative">
                             
                             {{-- Glow Effect Behind --}}
@@ -243,59 +243,217 @@
 
                 </div>
             </div>
-        </div>
+            
+            {{-- Modals remain unchanged but hidden in print --}}
+            {{-- CANCEL MODAL --}}
+            <div x-show="cancelModalOpen" style="display: none;" class="fixed inset-0 z-50 overflow-y-auto" aria-modal="true">
+                <div x-show="cancelModalOpen" class="fixed inset-0 bg-brand-dark/90 backdrop-blur-md transition-opacity"></div>
+                <div class="flex items-center justify-center min-h-screen p-4">
+                    <div @click.away="cancelModalOpen = false" class="bg-brand-dark rounded-2xl border border-red-500/30 max-w-md w-full p-8 relative shadow-[0_0_50px_rgba(239,68,68,0.2)]">
+                        <h3 class="text-2xl font-bold text-brand-white mb-4">Cancel Registration</h3>
+                        <p class="text-brand-light mb-6 text-lg">Are you sure you want to cancel your <strong class="text-brand-white">entire course registration</strong> for this semester?</p>
+                        <form action="{{ route('course.cancel') }}" method="POST" class="flex gap-4">
+                            @csrf
+                            <button type="button" @click="cancelModalOpen = false" class="flex-1 py-3 rounded-xl border border-brand-white/10 text-brand-light hover:text-brand-white">Back</button>
+                            <button type="submit" class="flex-1 py-3 rounded-xl bg-red-500 text-white font-bold hover:bg-red-600 shadow-lg">Confirm Cancel</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
 
-        {{-- CANCEL MODAL (Global) --}}
-        <div x-show="cancelModalOpen" style="display: none;" class="fixed inset-0 z-50 overflow-y-auto" aria-modal="true">
-            <div x-show="cancelModalOpen" class="fixed inset-0 bg-brand-dark/90 backdrop-blur-md transition-opacity"></div>
-            <div class="flex items-center justify-center min-h-screen p-4">
-                <div @click.away="cancelModalOpen = false" class="bg-brand-dark rounded-2xl border border-red-500/30 max-w-md w-full p-8 relative shadow-[0_0_50px_rgba(239,68,68,0.2)]">
-                    <h3 class="text-2xl font-bold text-brand-white mb-4">Cancel Registration</h3>
-                    <p class="text-brand-light mb-6 text-lg">Are you sure you want to cancel your <strong class="text-brand-white">entire course registration</strong> for this semester?</p>
-                    <p class="text-red-400 text-sm mb-6 bg-red-500/10 p-4 rounded-xl border border-red-500/20">
-                        Warning: This will flag your submission for cancellation. An advisor must approve this action.
-                    </p>
-                    <form action="{{ route('course.cancel') }}" method="POST" class="flex gap-4">
-                        @csrf
-                        <button type="button" @click="cancelModalOpen = false" class="flex-1 py-3 rounded-xl border border-brand-white/10 text-brand-light hover:text-brand-white">Back</button>
-                        <button type="submit" class="flex-1 py-3 rounded-xl bg-red-500 text-white font-bold hover:bg-red-600 shadow-lg">Confirm Cancel</button>
-                    </form>
+            {{-- MODIFY MODAL --}}
+            <div x-show="modifyModalOpen" style="display: none;" class="fixed inset-0 z-50 overflow-y-auto" aria-modal="true">
+                <div x-show="modifyModalOpen" class="fixed inset-0 bg-brand-dark/90 backdrop-blur-md transition-opacity"></div>
+                <div class="flex items-center justify-center min-h-screen p-4">
+                    <div @click.away="modifyModalOpen = false" class="bg-brand-dark rounded-2xl border border-blue-500/30 max-w-md w-full p-8 relative shadow-[0_0_50px_rgba(59,130,246,0.2)]">
+                        <h3 class="text-2xl font-bold text-brand-white mb-4">Modify Registration</h3>
+                        <p class="text-brand-light mb-6 text-lg">Request changes to your current registration?</p>
+                        <form action="{{ route('course.modify') }}" method="POST" class="flex gap-4">
+                            @csrf
+                            <button type="button" @click="modifyModalOpen = false" class="flex-1 py-3 rounded-xl border border-brand-white/10 text-brand-light hover:text-brand-white">Back</button>
+                            <button type="submit" class="flex-1 py-3 rounded-xl bg-blue-500 text-white font-bold hover:bg-blue-600 shadow-lg">Request Edit</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-
-        {{-- MODIFY MODAL (Global) --}}
-        <div x-show="modifyModalOpen" style="display: none;" class="fixed inset-0 z-50 overflow-y-auto" aria-modal="true">
-            <div x-show="modifyModalOpen" class="fixed inset-0 bg-brand-dark/90 backdrop-blur-md transition-opacity"></div>
-            <div class="flex items-center justify-center min-h-screen p-4">
-                <div @click.away="modifyModalOpen = false" class="bg-brand-dark rounded-2xl border border-blue-500/30 max-w-md w-full p-8 relative shadow-[0_0_50px_rgba(59,130,246,0.2)]">
-                    <h3 class="text-2xl font-bold text-brand-white mb-4">Modify Registration</h3>
-                    <p class="text-brand-light mb-6 text-lg">Do you want to request changes to your current registration?</p>
-                    <p class="text-blue-300 text-sm mb-6 bg-blue-500/10 p-4 rounded-xl border border-blue-500/20">
-                        This will change your status to <strong>"Modification Pending"</strong>. Once approved, your submission will be unlocked for editing.
-                    </p>
-                    <form action="{{ route('course.modify') }}" method="POST" class="flex gap-4">
-                        @csrf
-                        <button type="button" @click="modifyModalOpen = false" class="flex-1 py-3 rounded-xl border border-brand-white/10 text-brand-light hover:text-brand-white">Back</button>
-                        <button type="submit" class="flex-1 py-3 rounded-xl bg-blue-500 text-white font-bold hover:bg-blue-600 shadow-lg">Request Edit</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-
     </div>
 
-    {{-- Print Styles --}}
+    {{-- ========================================== --}}
+    {{-- OFFICIAL PRINT SLIP (Visible only in Print) --}}
+    {{-- ========================================== --}}
+    <div id="print-slip" class="hidden font-serif bg-white text-black p-8">
+        
+        {{-- 1. Header with Logo --}}
+        <div class="flex items-center justify-between border-b-4 border-double border-black pb-6 mb-8">
+            <div class="flex items-center gap-6">
+                {{-- Using the existing logo, grayscaled for professionalism --}}
+                <img src="{{ asset('images/smslogo.png') }}" alt="University Logo" class="h-24 w-auto grayscale opacity-90">
+                <div>
+                    <h1 class="text-xl font-bold uppercase tracking-widest leading-tight">University of Ionia</h1>
+                    <p class="text-sm font-semibold text-gray-600 uppercase tracking-wide">Academic Affairs Division</p>
+                    <p class="text-xs text-gray-500 mt-1">Official Course Registration Record</p>
+                </div>
+            </div>
+            <div class="text-right">
+                <h2 class="text-2xl font-extrabold uppercase tracking-widest border-2 border-black px-4 py-1 inline-block mb-2">
+                    CR-Slip
+                </h2>
+                <p class="text-sm font-bold mt-1">Semester {{ Auth::user()->semester }}</p>
+                <p class="text-xs text-gray-500 italic">Generated: {{ now()->format('d M Y, h:i A') }}</p>
+            </div>
+        </div>
+
+        {{-- 2. Student Metadata Grid --}}
+        <div class="bg-gray-50 border border-black p-4 mb-8">
+            <h3 class="text-sm font-bold uppercase border-b border-black/20 pb-2 mb-4">Student Particulars</h3>
+            <div class="grid grid-cols-2 gap-x-12 gap-y-3 text-sm">
+                <div class="flex items-start">
+                    <span class="w-32 font-bold text-gray-600 uppercase text-xs pt-0.5">Full Name:</span>
+                    <span class="font-bold uppercase flex-1">{{ Auth::user()->fName }} {{ Auth::user()->lName }}</span>
+                </div>
+                <div class="flex items-start">
+                    <span class="w-32 font-bold text-gray-600 uppercase text-xs pt-0.5">Matric Number:</span>
+                    <span class="font-mono font-bold tracking-wider text-base">{{ Auth::user()->matricNum }}</span>
+                </div>
+                <div class="flex items-start">
+                    <span class="w-32 font-bold text-gray-600 uppercase text-xs pt-0.5">Faculty:</span>
+                    <span class="uppercase flex-1">{{ Auth::user()->facCode }}</span>
+                </div>
+                <div class="flex items-start">
+                    <span class="w-32 font-bold text-gray-600 uppercase text-xs pt-0.5">Programme:</span>
+                    <span class="uppercase flex-1">{{ Auth::user()->progCode }}</span>
+                </div>
+                <div class="flex items-start">
+                    <span class="w-32 font-bold text-gray-600 uppercase text-xs pt-0.5">Academic Status:</span>
+                    <span class="uppercase font-bold text-black border border-black px-2 py-0.5 text-xs">Active</span>
+                </div>
+                <div class="flex items-start">
+                    <span class="w-32 font-bold text-gray-600 uppercase text-xs pt-0.5">Registration Date:</span>
+                    <span class="uppercase">{{ $submissionDate ? \Carbon\Carbon::parse($submissionDate)->format('d F Y') : 'N/A' }}</span>
+                </div>
+            </div>
+        </div>
+
+        {{-- 3. Course Table --}}
+        <div class="mb-8">
+            <h3 class="text-sm font-bold uppercase mb-2">Registered Courses</h3>
+            <table class="w-full border-collapse border border-black text-sm">
+                <thead>
+                    <tr class="bg-gray-200">
+                        <th class="border border-black px-3 py-2 text-center w-12 font-bold text-xs uppercase">No.</th>
+                        <th class="border border-black px-3 py-2 text-left w-32 font-bold text-xs uppercase">Course Code</th>
+                        <th class="border border-black px-3 py-2 text-left font-bold text-xs uppercase">Course Description</th>
+                        <th class="border border-black px-3 py-2 text-center w-20 font-bold text-xs uppercase">Credits</th>
+                        <th class="border border-black px-3 py-2 text-center w-24 font-bold text-xs uppercase">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($registeredCourses as $index => $course)
+                        <tr>
+                            <td class="border border-black px-3 py-2 text-center">{{ $index + 1 }}</td>
+                            <td class="border border-black px-3 py-2 font-mono font-bold">{{ $course->courseCode }}</td>
+                            <td class="border border-black px-3 py-2 uppercase">{{ $course->courseName }}</td>
+                            <td class="border border-black px-3 py-2 text-center">{{ $course->courseCreds }}</td>
+                            <td class="border border-black px-3 py-2 text-center text-xs uppercase font-bold">
+                                {{ $course->pivot->status }}
+                            </td>
+                        </tr>
+                    @endforeach
+                    {{-- Fill empty rows to make it look full if few courses --}}
+                    @for($i = $registeredCourses->count(); $i < 6; $i++)
+                         <tr>
+                            <td class="border border-black px-3 py-2 text-center">&nbsp;</td>
+                            <td class="border border-black px-3 py-2">&nbsp;</td>
+                            <td class="border border-black px-3 py-2">&nbsp;</td>
+                            <td class="border border-black px-3 py-2">&nbsp;</td>
+                            <td class="border border-black px-3 py-2">&nbsp;</td>
+                        </tr>
+                    @endfor
+                </tbody>
+                <tfoot>
+                    <tr class="bg-gray-100 font-bold">
+                        <td colspan="3" class="border border-black px-3 py-2 text-right uppercase text-xs">Total Credit Hours</td>
+                        <td class="border border-black px-3 py-2 text-center text-base">{{ $totalCredits }}</td>
+                        <td class="border border-black bg-gray-300"></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        {{-- 4. Declaration & Signatures --}}
+        <div class="mt-12 border-t-2 border-black pt-8">
+            <p class="text-xs text-justify mb-12 italic leading-relaxed">
+                I hereby declare that the information provided above is correct. I understand that any discrepancy in the registration record is my responsibility. 
+                I agree to abide by the academic regulations of the University.
+            </p>
+
+            <div class="grid grid-cols-2 gap-20">
+                <div class="text-center">
+                    <div class="border-b border-black border-dashed mb-2 h-16 relative">
+                        {{-- Optional: Digital Sig Placeholder --}}
+                        {{-- <span class="absolute bottom-1 left-0 right-0 text-gray-300 text-[10px] uppercase">Digital Signature</span> --}}
+                    </div>
+                    <p class="font-bold text-sm uppercase">{{ Auth::user()->fName }} {{ Auth::user()->lName }}</p>
+                    <p class="text-xs uppercase tracking-wider text-gray-500">Student Signature</p>
+                </div>
+                <div class="text-center">
+                    <div class="border-b border-black border-dashed mb-2 h-16"></div>
+                    <p class="font-bold text-sm uppercase">Academic Advisor</p>
+                    <p class="text-xs uppercase tracking-wider text-gray-500">Signature & Official Stamp</p>
+                </div>
+            </div>
+        </div>
+
+        {{-- 5. Footer Disclaimer --}}
+        <div class="absolute bottom-8 left-8 right-8 text-center border-t border-gray-300 pt-2">
+            <p class="text-[10px] text-gray-400 uppercase tracking-widest">
+                This document is computer generated and valid without signature for reference purposes.
+                <br>
+                ISO 9001:2015 Certified | System Generated ID: {{ uniqid() }}
+            </p>
+        </div>
+    </div>
+
+    {{-- Print Logic Overrides --}}
     <style>
         @media print {
-            nav, header, .animate-pulse, a[href*="course.registration"], .lg\:col-span-1 { display: none !important; }
-            .lg\:col-span-3 { width: 100% !important; margin: 0 !important; }
-            body { background: white !important; color: black !important; }
-            .bg-brand-dark\/90 { background: white !important; border: 2px solid black !important; box-shadow: none !important; }
-            .text-brand-white { color: black !important; }
-            .text-brand-light { color: #555 !important; }
-            .bg-brand-white\/5 { background: #f3f3f3 !important; }
-            .text-brand-medium { color: black !important; }
+            /* 1. HIDE EVERYTHING by default using visibility */
+            /* This preserves the layout flow but makes it invisible, preventing parents from collapsing */
+            body * {
+                visibility: hidden;
+            }
+
+            /* 2. SHOW THE SLIP */
+            /* We target the print slip and ALL its children to be visible */
+            #print-slip, #print-slip * {
+                visibility: visible;
+            }
+
+            /* 3. POSITION THE SLIP */
+            /* Fixed positioning pulls it out of the nested DOM and puts it on top of the page */
+            #print-slip {
+                position: fixed;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 20px;
+                background-color: white; /* Ensure it has a background to cover anything else */
+                display: block !important; /* Force block in case Tailwind 'hidden' is stubborn */
+                z-index: 9999;
+            }
+
+            /* 4. RESET PAGE MARGINS */
+            @page { 
+                margin: 0; 
+                size: auto;
+            }
+            body {
+                margin: 0;
+                background-color: white;
+            }
         }
     </style>
 </x-app-layout>
